@@ -85,7 +85,7 @@ function OlimpioadApplication() {
     let [searchElement, setSearchElement] = useState('')
 
     async function findStudents(e){//ETU LOGIKU NUJNO POMENYAT: POSTAVIT KAK V PRIMECANIAH I EHE NUJNO PRODUMAT ui V POISKE
-        e.preventDefault()
+        e.preventDefault()//TUT ESLI VBIT KLASS TIPA 9A TO ISKAT NE BUDET TK USESTATE RABOTAET NE TAK KAK TY DUMAESH
         setSearchElement(e.target.value)
         let bodyForm = {
             search: searchElement
