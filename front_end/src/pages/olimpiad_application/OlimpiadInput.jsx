@@ -21,32 +21,53 @@ function OlimpiadInput(props) {
             setSelelectValue(localStorage.getItem("transport"))
         } 
     },[])
+
     return (
         <>
-        {props.InputlinksNum===3 ? 
-            <select className="form-select" value={selectValue} onChange={changeSelect}>
-                <option value='default'>Выберите транспорт</option>
-                {(()=>{
-                    let myTransportlist = []
-                    for(let i = 0; i<transportList.length; i++){
-                        myTransportlist.push(
-                            <option key={i} value={transportList[i]}>{transportList[i]}</option>
-                        )
-                    }
-                    return myTransportlist
-                })()}
-            </select>
-        :
-            <input 
-                type="text"
-                className="form-control border border-primary"
-                placeholder={placeholders[props.InputlinksNum]}
-                name={props.inputLinks[props.InputlinksNum]}
-                value={props.inputMyValue}
-                onBlur={onFocusOutValueOnInput}
-                onChange={(e)=>{props.inputSetMyValue(e.target.value); localStorage.setItem(props.inputLinks[props.InputlinksNum], props.inputMyValue)}}
-            />
-        }
+        {(()=>{
+            if(props.InputlinksNum===3){
+                return (
+                    <select className="form-select" value={selectValue} onChange={changeSelect}>
+                        <option value='default'>Выберите транспорт</option>
+                        {(()=>{
+                            let myTransportlist = []
+                            for(let i = 0; i<transportList.length; i++){
+                                myTransportlist.push(
+                                    <option key={i} value={transportList[i]}>{transportList[i]}</option>
+                                )
+                            }
+                            return myTransportlist
+                        })()}
+                    </select>                   
+                )
+            }
+            else if(props.InputlinksNum===5){//TUT SPISOK STUDENTOV
+                return (
+                    <input 
+                        type="text"
+                        className="form-control border border-primary"
+                        placeholder={placeholders[props.InputlinksNum]}
+                        name={props.inputLinks[props.InputlinksNum]}
+                        // value={props.inputMyValue}
+                        onInput={props.findStudents}
+                    />                   
+                )
+            }
+            else {
+                return(
+                    <input 
+                        type="text"
+                        className="form-control border border-primary"
+                        placeholder={placeholders[props.InputlinksNum]}
+                        name={props.inputLinks[props.InputlinksNum]}
+                        value={props.inputMyValue}
+                        onBlur={onFocusOutValueOnInput}
+                        onChange={(e)=>{props.inputSetMyValue(e.target.value); localStorage.setItem(props.inputLinks[props.InputlinksNum], props.inputMyValue)}}
+                    />                    
+                )
+            }
+        })()}
+        
         </>
     )
 }

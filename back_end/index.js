@@ -95,7 +95,7 @@ app.post("/rili_api/teacher/:id", token_verifyer, (req, res)=>{
 
 app.post("/rili_api/search_for_checkpoints", token_verifyer, async(req,res)=>{
     //console.log(req.body)
-    db.query("SELECT * FROM students WHERE name LIKE ? OR surname LIKE ? OR patronymic LIKE ? OR graduation = ? OR email LIKE ? OR phone = ?", [req.body.search + '%', req.body.search + '%', req.body.search + '%', req.body.search, req.body.search + '%', req.body.search], (err, data)=>{
+    db.query("SELECT * FROM students WHERE name LIKE ? OR surname LIKE ? OR patronymic LIKE ? OR graduation = ? OR email LIKE ? OR phone LIKE ?", [req.body.search + '%', req.body.search + '%', req.body.search + '%', req.body.search, req.body.search + '%', req.body.search + '%'], (err, data)=>{
         if(err) return res.status(400).json({"error": err})
         if(data.length === 0) return res.status(200).json({"respond": "Такого ученика нету. Убедитесь в правильности поиского запроса"})
         return res.status(200).json(data)

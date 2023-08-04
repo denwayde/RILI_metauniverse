@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import useInterceptors from '../../hooks/UseInterceptor'
-import {ArrowRightCircle, ArrowLeftCircle, FilePlus, PlusSquare, Trash} from 'react-feather';
 import HeaderNav from '../components/Header';
 import Breadcrumb from '../components/Breadcrumb';
 import OlimpiadTabs from './OlimpiadTabs';
 import OlimpiadInput from './OlimpiadInput';
+import OlimpiadInputBtns from './OlimpiadInputBtns';
+import OlimpiadNoteList from './OlimpiadNoteList';
+import StudentsList from './StudentsList';
 //import {Link} from 'react-router-dom'
 
 function OlimpioadApplication() {
@@ -20,7 +22,9 @@ function OlimpioadApplication() {
         if(localStorage.getItem(links[linksNum])!==null){
             setMyValue(localStorage.getItem(links[linksNum]))
         }
-        
+        if(localStorage.getItem("notes")!==null){
+            setNoteList(JSON.parse(localStorage.getItem("notes")))
+        }
         const fetchTeachersData = async ()=>{
             await axiosInterceptors.post("/check_page")
                 .then(data=>{
@@ -32,7 +36,9 @@ function OlimpioadApplication() {
                     }
                 }) 
         }
-        fetchTeachersData()        
+        fetchTeachersData()
+        
+        
         
     },[axiosInterceptors, linksNum, links])
     
@@ -41,12 +47,10 @@ function OlimpioadApplication() {
         if((linksNum<links.length-1 && myVar>0) || (linksNum>0 && myVar<0)){
             setLinksNum(prevNum => prevNum+myVar)
             setInputAttrs(linksNum+1)
-        }
-        
+        }   
     }
 
     function setInputAttrs(myNum){
-        
         setMyValue(prevValue=>{
             if(localStorage.getItem(links[myNum])!==null){
                 
@@ -59,11 +63,8 @@ function OlimpioadApplication() {
         })
     }
     
-    
-
-    
-
     let [noteList, setNoteList] = useState([])
+
     function addItem(e){
         if(myValue!==''){
             setNoteList(args=>[...args, myValue])
@@ -79,6 +80,29 @@ function OlimpioadApplication() {
         })
     }
 
+    let [respondForSearch, setRespondForSearch] = useState([])
+    let [messageIfErr, setMessageIfErr] = useState('')
+    let [searchElement, setSearchElement] = useState('')
+
+    async function findStudents(e){//ETU LOGIKU NUJNO POMENYAT: POSTAVIT KAK V PRIMECANIAH I EHE NUJNO PRODUMAT ui V POISKE
+        e.preventDefault()
+        setSearchElement(e.target.value)
+        let bodyForm = {
+            search: searchElement
+        }
+        if(e.target.value.length >= 2){
+            await axiosInterceptors.post("/search_for_checkpoints", bodyForm)
+                .then(data =>{
+                    if(data.data){
+                        setRespondForSearch(data.data)
+                    }
+                    else{
+                        setMessageIfErr(data.response.data)
+                    }
+
+                })
+        }
+    }
 
     return isValid ? (
         <>
@@ -92,42 +116,15 @@ function OlimpioadApplication() {
 
                 <div className="row mt-5">
                     <div className="align-self-start input-group mb-3">
-                        
-                        <OlimpiadInput InputlinksNum = {linksNum} inputMyValue={myValue} inputSetMyValue={setMyValue} inputLinks = {links} />
-                        
-                        {linksNum===4 && <span className="input-group-text btn btn-outline-primary" id="inputGroup-sizing-default" onClick={addItem}><span className="textInBtn">Добавить</span> <PlusSquare/></span>}
-
-                        {linksNum>0 && <span className="input-group-text btn btn-outline-primary" id="inputGroup-sizing-default" onClick={(e)=>{saveArgsToLocalStorage(e, -1)}}><span className="textInBtn">Назад</span> <ArrowLeftCircle/></span>}
-
-                        {
-                            linksNum===5 ? 
-                            <span className="input-group-text btn btn-outline-success" id="inputGroup-sizing-default"><span className="textInBtn">Создать документ</span> <FilePlus/></span> : 
-                            <span className="input-group-text btn btn-outline-primary" id="inputGroup-sizing-default" onClick={(e)=>{saveArgsToLocalStorage(e, 1)}}><span className="textInBtn">Вперед</span> <ArrowRightCircle/></span>
-                        }
-                        
-                    </div>
-                    {
-                        noteList.length>0 && linksNum === 4 ?
-                        <ul className="list-group">
-                            {(()=>{
-                                localStorage.setItem("notes", JSON.stringify(noteList))
-                                let myNoteList = []
-                                for(let i= 0; i < noteList.length; i++){
-                                    myNoteList.push(
-                                        <li key={i} className="list-group-item d-flex justify-content-between align-items-center">
-                                            <span>{noteList[i]}</span>
-                                            <span className="btn btn-outline-primary m-1"  onClick={(e)=>delItem(e, noteList[i])}>
-                                                <Trash/>
-                                            </span>
-                                        </li>
-                                    )
-                                }
-                                return myNoteList
-                            })()}
-                        </ul>
-                        : null
+                        <OlimpiadInput InputlinksNum = {linksNum} inputMyValue={myValue} inputSetMyValue={setMyValue} inputLinks = {links} findStudents = {findStudents} />
+                        <OlimpiadInputBtns saveArgsToLocalStorage={saveArgsToLocalStorage} linksNum={linksNum} addItem={addItem} /> 
                     
-                    } 
+                    </div>
+
+                    <OlimpiadNoteList noteList = {noteList} linksNum={linksNum} delItem={delItem} />
+
+                    <StudentsList linksNum={linksNum} respondForSearch = {respondForSearch} messageIfErr = {messageIfErr} />
+                     
                 </div>
                              
             </div>       
