@@ -49,7 +49,7 @@ const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'ilfat1991',
-    database: 'rili_meta'
+    database: 'rili_db'
   })
 
 app.post("/rili_api/login", (req, res)=>{
