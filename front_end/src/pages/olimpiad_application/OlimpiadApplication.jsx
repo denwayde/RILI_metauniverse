@@ -104,6 +104,10 @@ function OlimpioadApplication() {
         }
     }
 
+    function addedStudentList(addedStudentListValue){
+        console.log(addedStudentListValue)
+    }
+
     return isValid ? (
         <>
         <HeaderNav></HeaderNav>
@@ -123,7 +127,7 @@ function OlimpioadApplication() {
 
                     <OlimpiadNoteList noteList = {noteList} linksNum={linksNum} delItem={delItem} />
 
-                    <StudentsList linksNum={linksNum} respondForSearch = {respondForSearch} messageIfErr = {messageIfErr} />
+                    <StudentsList linksNum={linksNum} respondForSearch = {respondForSearch} messageIfErr = {messageIfErr} addedStudentList = {addedStudentList} />
                      
                 </div>
                              

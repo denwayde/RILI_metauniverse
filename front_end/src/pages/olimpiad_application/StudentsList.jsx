@@ -1,11 +1,25 @@
-import React from 'react';
+//import React, { useRef } from 'react';
+import { useEffect, useState } from 'react'
 import {UserPlus, PlusSquare} from 'react-feather'
 
 function StudentsList(props) {
-    // let 
-    // function addStudentsToList(e){
+    //let studentsData = useRef()
+    let [addedStudentListValue, setAddedStdListValue] = useState([])
+    // useEffect(()=>{
+    //     let unzippedStdList = JSON.parse('addedStudentsList')
+    //     if(unzippedStdList.length!==0){
+    //         setAddedStdListValue([...unzippedStdList])
+    //     }
+        
+    // }, [addedStudentListValue])
 
-    // }    
+    function addStudentToList(e){
+        //console.log(props.respondForSearch.filter(el => el.id_student === parseInt(e.currentTarget.id)))
+        let newStd = props.respondForSearch.filter(el => el.id_student === parseInt(e.currentTarget.id))
+        setAddedStdListValue([...addedStudentListValue, newStd])
+        console.log(addedStudentListValue)
+        //localStorage.setItem('addedStudentsList', JSON.stringify(addedStudentListValue))
+    } 
     return (
         <>
             {   
@@ -24,7 +38,9 @@ function StudentsList(props) {
                                             <span className="studentPhone" style={{color: '#6c757d' }}>{student.phone}</span>
                                         </span>
                                         <span className='d-flex justify-content-between align-items-center'>
-                                            <span className='btn btn-outline-success' id={student.id_student}><PlusSquare/></span>
+                                            <span className='btn btn-outline-success' id={student.id_student} onClick={addStudentToList}>
+                                                <PlusSquare/>
+                                            </span>
                                         </span>
                                     </li>
                                 )
