@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 function OlimpiadInput(props) {
     let placeholders = ["Введите цель и название мероприятия", "Введите адрес проведения мероприятия", "Выберите период проведения мероприятия", "Выберите транспорт", "Напишите дополнения необходимые для олипиады (перенос обеда, питание с собой и т.п.)", "Выберите учеников, участников мероприятия"]
     let transportList = ["ПАЗ-3205", "Hyundai Accent", "Свое авто"]
     let[selectValue, setSelelectValue] = useState('default')
+    let inputRef = useRef()
     function changeSelect(e){
         setSelelectValue(e.target.value)
         localStorage.setItem(props.inputLinks[props.InputlinksNum], e.target.value)
@@ -39,6 +40,26 @@ function OlimpiadInput(props) {
                             return myTransportlist
                         })()}
                     </select>                   
+                )
+            }
+            else if(props.InputlinksNum===4){//TUT NOTES LIST
+                return (
+                    <input 
+                        type="text"
+                        ref={inputRef}
+                        className="form-control border border-primary"
+                        placeholder={placeholders[props.InputlinksNum]}
+                        name={props.inputLinks[props.InputlinksNum]}
+                        //value= {inputRef.current.value}
+                        //onBlur={onFocusOutValueOnInput}
+                        onChange={
+                            (e)=>{
+                                if(inputRef.current.value!=='' || inputRef.current.value!==' '){
+                                    //props.inputSetMyValue(e.target.value); 
+                                    localStorage.setItem(props.inputLinks[props.InputlinksNum], inputRef.current.value)
+                                }
+                            }}
+                    />                   
                 )
             }
             else if(props.InputlinksNum===5){//TUT SPISOK STUDENTOV

@@ -1,12 +1,14 @@
 import React from 'react';
 import {Trash} from 'react-feather';
 
+
+
 function OlimpiadNoteList(props) {
     
     return (
         <>
             {
-                props.noteList.length>0 && props.linksNum === 4 ?
+                props.noteList.length>0 && props.linksNum === 4 && typeof props.noteList !== 'string' ?
                 <ul className="list-group">
                     {(()=>{
                         localStorage.setItem("notes", JSON.stringify(props.noteList))

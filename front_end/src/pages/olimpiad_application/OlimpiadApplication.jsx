@@ -8,22 +8,38 @@ import OlimpiadInputBtns from './OlimpiadInputBtns';
 import OlimpiadNoteList from './OlimpiadNoteList';
 import StudentsList from './StudentsList';
 //import {Link} from 'react-router-dom'
+function isJSON(str){
+    try {
+        JSON.parse(str)
+        return true
+    } catch(e){
+        return false
+    }
+
+}
 
 function OlimpioadApplication() {
     let [myValue, setMyValue] = useState('')
     
     let [isValid, setIsValid] = useState(false)
     let links = useMemo(()=>['olimpName', 'adress', 'period', 'transport', 'notes', 'studentsList'], [])
-     
     let [linksNum, setLinksNum] = useState(0)
+
     const axiosInterceptors = useInterceptors()
-    
+    let [noteList, setNoteList] = useState([])
+
     useEffect(()=>{
         if(localStorage.getItem(links[linksNum])!==null){
             setMyValue(localStorage.getItem(links[linksNum]))
         }
         if(localStorage.getItem("notes")!==null){
-            setNoteList(JSON.parse(localStorage.getItem("notes")))
+            if(isJSON(localStorage.getItem("notes"))){
+                setNoteList(JSON.parse(localStorage.getItem("notes")))
+            }
+            else {
+                setNoteList(localStorage.getItem("notes"))
+            }
+            
         }
         const fetchTeachersData = async ()=>{
             await axiosInterceptors.post("/check_page")
@@ -63,9 +79,9 @@ function OlimpioadApplication() {
         })
     }
     
-    let [noteList, setNoteList] = useState([])
+    
 
-    function addItem(e){
+    function addItem(e){//ZDES NUJNO POPRAVLYAT
         if(myValue!==''){
             setNoteList(args=>[...args, myValue])
             setMyValue('')
@@ -78,6 +94,10 @@ function OlimpioadApplication() {
             let newPrev = prev.filter(items=>items!==item)
             return newPrev
         })
+        if(noteList.length === 1){
+            localStorage.removeItem("notes")
+        }
+
     }
 
     let [respondForSearch, setRespondForSearch] = useState([])

@@ -3,22 +3,14 @@ import { useEffect, useState } from 'react'
 import {UserPlus, PlusSquare} from 'react-feather'
 
 function StudentsList(props) {
-    //let studentsData = useRef()
+    
     let [addedStudentListValue, setAddedStdListValue] = useState([])
-    // useEffect(()=>{
-    //     let unzippedStdList = JSON.parse('addedStudentsList')
-    //     if(unzippedStdList.length!==0){
-    //         setAddedStdListValue([...unzippedStdList])
-    //     }
-        
-    // }, [addedStudentListValue])
-
+   
     function addStudentToList(e){
-        //console.log(props.respondForSearch.filter(el => el.id_student === parseInt(e.currentTarget.id)))
+        
         let newStd = props.respondForSearch.filter(el => el.id_student === parseInt(e.currentTarget.id))
         setAddedStdListValue([...addedStudentListValue, newStd])
         console.log(addedStudentListValue)
-        //localStorage.setItem('addedStudentsList', JSON.stringify(addedStudentListValue))
     } 
     return (
         <>
