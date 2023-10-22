@@ -78,15 +78,14 @@ function OlimpioadApplication() {
             return prevValue
         })
     }
-    
-    
 
-    function addItem(e){//ZDES NUJNO POPRAVLYAT
-        if(myValue!==''){
-            setNoteList(args=>[...args, myValue])
-            setMyValue('')
+
+    function addItem(e){//ZDES NUJNO POPRAVLYA
+            if(myValue!==''){
+                setNoteList(args=>[...args, myValue])
+                setMyValue('')
+            }
         }
-    }
 
     function delItem(e, item){
         setMyValue('')

@@ -2,7 +2,6 @@ import React from 'react';
 import {ArrowRightCircle, ArrowLeftCircle, FilePlus, PlusSquare} from 'react-feather';
 
 function OlimpiadInputBtns(props) {
-
     return (
         <>
             {
