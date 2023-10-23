@@ -1,15 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react'
 
+
 function OlimpiadInput(props) {
     let placeholders = ["Введите цель и название мероприятия", "Введите адрес проведения мероприятия", "Выберите период проведения мероприятия", "Выберите транспорт", "Напишите дополнения необходимые для олипиады (перенос обеда, питание с собой и т.п.)", "Выберите учеников, участников мероприятия"]
     let transportList = ["ПАЗ-3205", "Hyundai Accent", "Свое авто"]
     let[selectValue, setSelelectValue] = useState('default')
-    let[notesValue, setNotesValue] = useState('')
+    
     let inputRef = useRef()
+    
+
     function changeSelect(e){
         setSelelectValue(e.target.value)
         localStorage.setItem(props.inputLinks[props.InputlinksNum], e.target.value)
     }
+
     function onFocusOutValueOnInput(e){
         if(e.target.value === ''){
             localStorage.removeItem(props.inputLinks[props.InputlinksNum])
@@ -57,9 +61,12 @@ function OlimpiadInput(props) {
                         className="form-control border border-primary"
                         placeholder={placeholders[props.InputlinksNum]}
                         name={props.inputLinks[props.InputlinksNum]}
-                        value={notesValue}
+                        value={props.notesValue}
                         //onBlur={onFocusOutValueOnInput}
-                        onChange={(e)=>{setNotesValue(e.target.value)}}
+                        onChange={(e)=>{
+                            const newVal = e.target.value
+                            props.setNotesValue(newVal)
+                        }}
                     />                   
                 )
             }

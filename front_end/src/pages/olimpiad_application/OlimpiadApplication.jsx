@@ -26,8 +26,8 @@ function OlimpioadApplication() {
     let [linksNum, setLinksNum] = useState(0)
 
     const axiosInterceptors = useInterceptors()
+    
     let [noteList, setNoteList] = useState([])
-
     useEffect(()=>{
         if(localStorage.getItem(links[linksNum])!==null){
             setMyValue(localStorage.getItem(links[linksNum]))
@@ -80,13 +80,6 @@ function OlimpioadApplication() {
     }
 
 
-    function addItem(e){//ZDES NUJNO POPRAVLYA
-            if(myValue!==''){
-                setNoteList(args=>[...args, myValue])
-                setMyValue('')
-            }
-        }
-
     function delItem(e, item){
         setMyValue('')
         setNoteList(prev=>{
@@ -127,6 +120,20 @@ function OlimpioadApplication() {
         console.log(addedStudentListValue)
     }
 
+  
+    let[notesValue, setNotesValue] = useState('')
+
+    function addItem(e){//ZDES NUJNO POPRAVLYA
+        if(notesValue.trim()!==''){
+            setNoteList([...noteList, notesValue.trim()])
+            setNotesValue('')
+        }
+    }
+
+    // function editItem(item){
+
+    // }
+
     return isValid ? (
         <>
         <HeaderNav></HeaderNav>
@@ -139,8 +146,10 @@ function OlimpioadApplication() {
 
                 <div className="row mt-5">
                     <div className="align-self-start input-group mb-3">
-                        <OlimpiadInput InputlinksNum = {linksNum} inputMyValue={myValue} inputSetMyValue={setMyValue} inputLinks = {links} findStudents = {findStudents} />
-                        <OlimpiadInputBtns saveArgsToLocalStorage={saveArgsToLocalStorage} linksNum={linksNum} addItem={addItem} /> 
+                        
+                        <OlimpiadInput InputlinksNum = {linksNum} inputMyValue={myValue} inputSetMyValue={setMyValue} inputLinks = {links} findStudents = {findStudents}  notesValue={notesValue} setNotesValue={setNotesValue} />
+                        
+                        <OlimpiadInputBtns saveArgsToLocalStorage={saveArgsToLocalStorage} linksNum={linksNum} addItem={addItem}/> 
                     
                     </div>
 
