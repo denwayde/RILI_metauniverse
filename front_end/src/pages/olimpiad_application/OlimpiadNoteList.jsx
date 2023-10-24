@@ -1,14 +1,18 @@
 import React, {useState} from 'react';
-import {Trash, Edit2} from 'react-feather';
+import {Trash, Edit2, CheckSquare} from 'react-feather';
 
 
 
 function OlimpiadNoteList(props) {
-    
-    let [toEdit, setToEdit] = useState(false)
-    let [editableClass, setEditableClass] = useState('')
+    let [editableIndex, setIdetableIndex] = useState(-1)
+    let [editableValue, setIdetableValue] = useState('')
+
     function editItem(e){
-        console.log(e.currentTarget.id)
+        let index = parseInt(e.currentTarget.id)
+        //console.log(index)
+        setIdetableIndex(index)
+        //console.log(editableIndex)
+        setIdetableValue(props.noteList[index])
     }
     return (
         <>
@@ -21,16 +25,21 @@ function OlimpiadNoteList(props) {
                         for(let i= 0; i < props.noteList.length; i++){
                             myNoteList.push(
                                 <li key={i} className="list-group-item d-flex justify-content-between align-items-center">
-
-                                    <span className={editableClass}> {
-                                    editableClass ? 
-                                    <div class="input-group mb-3">
-                                        <input type="text" className="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2"/>
-                                        <button className="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
-                                    </div> : 
-                                    props.noteList[i]} </span>
+                                    {
+                                            editableIndex === i ? 
+                                            (<div className="input-group mb-3">
+                                                <input type="text"
+                                                    className="form-control"
+                                                    value={editableValue}
+                                                    onChange={(e)=>setIdetableValue(e.target.value)}
+                                                />
+                                                <button className="btn btn-outline-secondary" type="button" id="button-addon2">
+                                                    <CheckSquare/>
+                                                </button>
+                                            </div>) : (<span>{props.noteList[i]}</span>)
+                                    } 
                                     <span className="spanGroup">
-                                        <span className="btn btn-outline-success m-1" id={i} onClick={(e)=> editItem(e)}>
+                                        <span className="btn btn-outline-success m-1" id={i} onClick={(e)=>editItem(e)}>
                                             <Edit2/>
                                         </span>
                                         <span className="btn btn-outline-danger m-1"  onClick={(e)=>props.delItem(e, props.noteList[i])}>
