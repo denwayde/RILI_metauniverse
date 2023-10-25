@@ -66,7 +66,7 @@ function OlimpioadApplication() {
         }   
     }
 
-    function setInputAttrs(myNum){
+    function setInputAttrs(myNum){//!!!!!!!!!!!!!!!!!!tut kajetsya proishodyat nenujnie veshi
         setMyValue(prevValue=>{
             if(localStorage.getItem(links[myNum])!==null){
                 
@@ -96,13 +96,13 @@ function OlimpioadApplication() {
     let [messageIfErr, setMessageIfErr] = useState('')
     let [searchElement, setSearchElement] = useState('')
 
-    async function findStudents(e){//ETU LOGIKU NUJNO POMENYAT: POSTAVIT KAK V PRIMECANIAH I EHE NUJNO PRODUMAT ui V POISKE
-        e.preventDefault()//TUT ESLI VBIT KLASS TIPA 9A TO ISKAT NE BUDET TK USESTATE RABOTAET NE TAK KAK TY DUMAESH
+    async function findStudents(e){//!!!!!!!!!!!ETU LOGIKU NUJNO POMENYAT: POSTAVIT KAK V PRIMECANIAH I EHE NUJNO PRODUMAT ui V POISKE!!!!!!!!!!
+        e.preventDefault()//!!!!!!TUT ESLI VBIT KLASS TIPA 9A TO ISKAT NE BUDET TK USESTATE RABOTAET NE TAK KAK TY DUMAESH!!!!!!!
         setSearchElement(e.target.value)
         let bodyForm = {
             search: searchElement
         }
-        if(e.target.value.length >= 2){
+        if(e.target.value.length > 0){
             await axiosInterceptors.post("/search_for_checkpoints", bodyForm)
                 .then(data =>{
                     if(data.data){
