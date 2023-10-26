@@ -76,11 +76,10 @@ function OlimpiadInput(props) {
                         type="text"
                         className="form-control border border-primary"
                         placeholder={placeholders[props.InputlinksNum]}
-                        name={props.inputLinks[props.InputlinksNum]}
                         value={props.inputMyValue}
                         onInput={props.findStudents}
-                        onBlur={onFocusOutValueOnInput}
-                        onChange={(e)=>{props.inputSetMyValue(e.target.value); localStorage.setItem(props.inputLinks[props.InputlinksNum], props.inputMyValue)}}
+                        // onBlur={onFocusOutValueOnInput}
+                        onChange={(e)=>{props.inputSetMyValue(e.target.value)}}
                     />                   
                 )
             }

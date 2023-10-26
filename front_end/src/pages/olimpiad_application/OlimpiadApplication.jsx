@@ -20,14 +20,16 @@ function isJSON(str){
 
 function OlimpioadApplication() {
     let [myValue, setMyValue] = useState('')
-    
     let [isValid, setIsValid] = useState(false)
     let links = useMemo(()=>['olimpName', 'adress', 'period', 'transport', 'notes', 'studentsList'], [])
     let [linksNum, setLinksNum] = useState(0)
+    let [respondForSearch, setRespondForSearch] = useState([])
+    let [messageIfErr, setMessageIfErr] = useState('')
+    let [searchElement, setSearchElement] = useState('')
 
     const axiosInterceptors = useInterceptors()
-    
     let [noteList, setNoteList] = useState([])
+
     useEffect(()=>{
         if(localStorage.getItem(links[linksNum])!==null){
             setMyValue(localStorage.getItem(links[linksNum]))
@@ -56,7 +58,7 @@ function OlimpioadApplication() {
         
         
         
-    },[axiosInterceptors, linksNum, links])
+    },[axiosInterceptors, linksNum, links, respondForSearch])
     
 
     function saveArgsToLocalStorage(e, myVar){
@@ -92,9 +94,7 @@ function OlimpioadApplication() {
 
     }
 
-    let [respondForSearch, setRespondForSearch] = useState([])
-    let [messageIfErr, setMessageIfErr] = useState('')
-    let [searchElement, setSearchElement] = useState('')
+
 
     async function findStudents(e){//!!!!!!!!!!!ETU LOGIKU NUJNO POMENYAT: POSTAVIT KAK V PRIMECANIAH I EHE NUJNO PRODUMAT ui V POISKE!!!!!!!!!!
         e.preventDefault()//!!!!!!TUT ESLI VBIT KLASS TIPA 9A TO ISKAT NE BUDET TK USESTATE RABOTAET NE TAK KAK TY DUMAESH!!!!!!!
