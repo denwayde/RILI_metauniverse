@@ -1,22 +1,21 @@
-//import React, { useRef } from 'react';
-import { useEffect, useState } from 'react'
-import {UserPlus, PlusSquare, MinusSquare} from 'react-feather'
+import React, { useEffect, useState } from 'react'
+import {PlusSquare} from 'react-feather'
 
 function StudentsList(props) {
     
-    let [addedStudentListValue, setAddedStdListValue] = useState([])//!!!!!!!!!!!!!!!ЭТО НУЖНО ПРЕВОДИТЬ В oLIMPIADaPPLICATION!!!!
+    //let [addedStudentListValue, setAddedStdListValue] = useState([])//!!!teper tut lejat spisok teh kogo nujno dobavit v zayavku!!!etot object lejit v olimpiadapplication
     let [addedStudentIndex, setAddedStudentIndex] = useState(-1)
     let [students, setStudents] = useState([])
     
-    useEffect(()=>{//ZNACHIT TUT BUDET PROISHODIT OBRABOTKA REZULTATA
+    useEffect(()=>{//TUT PEREDAEM SPISOK REBYAT CHTOBI NOVII SPISOK MOJNO BILO IZMENYAT
         setStudents(props.respondForSearch)
-    }, [props.respondForSearch])
+    }, [props.respondForSearch])//VIDIMO TUT BUDET OBRABATYVATSYA REZULTAT OTVETA OT BD
 
     function addStudentToList(e){
         let index = parseInt(e.currentTarget.id)
         setAddedStudentIndex(index)
         let newStd =  students.filter(el => el.id_student === index)
-        setAddedStdListValue([...addedStudentListValue, newStd])
+        props.setAddedStdListValue([...props.addedStudentListValue, newStd])
         let new_students =  students.filter(prev => prev.id_student !== index)
         setStudents(new_students)   
     }
@@ -43,12 +42,9 @@ function StudentsList(props) {
                                             <span className="studentPhone" style={{color: '#6c757d' }}>{student.phone}</span>
                                         </span>
                                         <span className='d-flex justify-content-between align-items-center'>
-                                            
                                                 <span className='btn btn-outline-success' id={student.id_student} onClick={addStudentToList}>
                                                     <PlusSquare/>
-                                                </span>
-                                            
-                                            
+                                                </span>     
                                         </span>
                                     </li>
                                 )

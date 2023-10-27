@@ -7,6 +7,7 @@ import OlimpiadInput from './OlimpiadInput';
 import OlimpiadInputBtns from './OlimpiadInputBtns';
 import OlimpiadNoteList from './OlimpiadNoteList';
 import StudentsList from './StudentsList';
+import AddedStudentsList from './AddedStudentsList';
 //import {Link} from 'react-router-dom'
 function isJSON(str){
     try {
@@ -26,9 +27,10 @@ function OlimpioadApplication() {
     let [respondForSearch, setRespondForSearch] = useState([])
     let [messageIfErr, setMessageIfErr] = useState('')
     let [searchElement, setSearchElement] = useState('')
-
+    let [addedStudentListValue, setAddedStdListValue] = useState([])
     const axiosInterceptors = useInterceptors()
     let [noteList, setNoteList] = useState([])
+
 
     useEffect(()=>{
         if(localStorage.getItem(links[linksNum])!==null){
@@ -141,21 +143,54 @@ function OlimpioadApplication() {
                 
                 <Breadcrumb breadcrumbActive = "Заявка на олимпиаду" />
 
-                <OlimpiadTabs tabNum = {linksNum} linksTabs = {links} tabsSetInputAttrs = {setInputAttrs}  tabsSetLinksNum = {setLinksNum}/>
+                <OlimpiadTabs
+                    tabNum = {linksNum}
+                    linksTabs = {links}
+                    tabsSetInputAttrs = {setInputAttrs} 
+                    tabsSetLinksNum = {setLinksNum}
+                />
 
 
                 <div className="row mt-5">
                     <div className="align-self-start input-group mb-3">
                         
-                        <OlimpiadInput InputlinksNum = {linksNum} inputMyValue={myValue} inputSetMyValue={setMyValue} inputLinks = {links} findStudents = {findStudents}  notesValue={notesValue} setNotesValue={setNotesValue} />
+                        <OlimpiadInput
+                            InputlinksNum = {linksNum}
+                            inputMyValue={myValue}
+                            inputSetMyValue={setMyValue}
+                            inputLinks = {links}
+                            findStudents = {findStudents}
+                            notesValue={notesValue}
+                            setNotesValue={setNotesValue}
+                        />
                         
-                        <OlimpiadInputBtns saveArgsToLocalStorage={saveArgsToLocalStorage} linksNum={linksNum} addItem={addItem}/> 
+                        <OlimpiadInputBtns
+                            saveArgsToLocalStorage={saveArgsToLocalStorage}
+                            linksNum={linksNum}
+                            addItem={addItem}
+                        /> 
                     
                     </div>
 
-                    <OlimpiadNoteList noteList = {noteList} linksNum={linksNum} delItem={delItem} />
+                    <AddedStudentsList
+                        addedStudentListValue = {addedStudentListValue}
+                        setAddedStdListValue = {setAddedStdListValue}
+                    />
 
-                    <StudentsList linksNum={linksNum} respondForSearch = {respondForSearch} messageIfErr = {messageIfErr} addedStudentList = {addedStudentList} />
+                    <OlimpiadNoteList
+                        noteList = {noteList}
+                        linksNum={linksNum}
+                        delItem={delItem}
+                    />
+
+                    <StudentsList 
+                        linksNum={linksNum}
+                        respondForSearch = {respondForSearch}
+                        messageIfErr = {messageIfErr}
+                        addedStudentList = {addedStudentList}
+                        addedStudentListValue = {addedStudentListValue}
+                        setAddedStdListValue = {setAddedStdListValue}
+                    />
                      
                 </div>
                              
