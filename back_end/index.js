@@ -68,7 +68,7 @@ app.post("/rili_api/login", (req, res)=>{
             db.query("UPDATE tokens SET token = ? WHERE user_id=?", [token, dataToUser.id], (err, result)=>{
                 if(err)return res.status(401).json("Error on UPDATE token")
                 if(result.changedRows == 0){
-                    db.query("insert into tokens(id, token) values(?, ?)", [dataToUser.id, token])
+                    db.query("insert into tokens(user_id, token) values(?, ?)", [dataToUser.id, token])
                 }
                 return res.status(200).json(dataToUser)
             })

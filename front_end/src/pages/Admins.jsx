@@ -1,12 +1,15 @@
 import React from 'react'
+import HeaderNav from './components/Header';
+
 
 const Admins = () => {
 
 
   return (
-    <div>
+    <>
+      <HeaderNav/>
       <h1>Hello from Admins</h1>
-    </div>
+    </>
   )
 }
 

@@ -169,14 +169,19 @@ const Login = ()=>{
 
     let [showError, setShowError] = useState("")
     async function submitForm(e){
+
         e.preventDefault()
         let bodyForm = {
             phone: inputNumField.valueElements,
             password: inputPasField.valueElements
         }
-        await axiosInterceptors.post("/login", bodyForm).then(data=>{
+        let headers = {
+            'Authorization': 'Bearer' ,
+        }
+        await axiosInterceptors.post("/login", bodyForm, headers).then(data=>{
             //console.log(data)
             if(data.data){
+                console.log(data)
                 setShowError("")
                 localStorage.setItem("token", JSON.stringify(data.data.token))
                 localStorage.setItem("teacherId", JSON.stringify(data.data.id))
@@ -184,12 +189,14 @@ const Login = ()=>{
                 //console.log(data.data)
             }
             else{
-                setShowError(data.response.data)
+                setShowError("Скорее всего сервак упал. Или израиль его таки уронил((((. Пишите срочно Динису Рафиковичу!!!")
             }
 
-        }).catch(error=>{
+        })
+        .catch(error=>{
             console.log(`EEEError: ${error}`)
-            setShowError('Ошибка сервера: Попробуйте перезагрузите страницу (F5) и авторизуйтесь снова. Если это не помогает пишите ДР.')
+            console.log(error.response.data)
+            setShowError(error.response.data)
         })
     }
     

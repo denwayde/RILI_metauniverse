@@ -8,6 +8,7 @@ function Checkpoints() {
    let [usrId, setUsrId] = useState()
    let [isValid, setIsValid] = useState(false)
    const navigateTo = useNavigate()
+
    const axiosInterceptors = useInterceptors()
     useEffect(()=>{
         const fetchTeachersData = async ()=>{
