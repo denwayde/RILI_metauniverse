@@ -179,8 +179,8 @@ const Login = ()=>{
             if(data.data){
                 setShowError("")
                 localStorage.setItem("token", JSON.stringify(data.data.token))
-                localStorage.setItem("teacherId", JSON.stringify(data.data.teacher_id))
-                navigateTo(`/${data.data.role}/${data.data.teacher_id}`)
+                localStorage.setItem("teacherId", JSON.stringify(data.data.id))
+                navigateTo(`/${data.data.role}/${data.data.id}`)
                 //console.log(data.data)
             }
             else{

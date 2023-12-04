@@ -10,44 +10,41 @@ const jwt = require("jsonwebtoken")
 //marat rajapovich: 123 -  $2b$04$O44LT5oKEP0LceqR9XQC3OsJP3Rf0NXk9eDi7tzdw.q/X8SfR1uBe
 //zagir ramilevich: 567 - $2b$04$vzKgJxSs8vVaVU0YuDJGI.pwNJcrc92HErjXPDm/InswJ5C0Ypfwq
 //dr: $04$KQoRVw5AvQdNGPNltLeaK.TlQ8b4bXEmL3pJl.WawMHwnOCGCWOtO
-// bcrypt.hash('248f', 3).then(hash=>{
+//director: 123d - $2b$04$XEouMPGMkA/.I4skf.l2O.OSgAHF0rh8kSeAsRU2ii/u6Nq/ufv3K
+//rz: 123d - $2b$04$XEouMPGMkA/.I4skf.l2O.OSgAHF0rh8kSeAsRU2ii/u6Nq/ufv3K
+// bcrypt.hash('123d', 3).then(hash=>{
 //     console.log(hash)
 //     //validateUser(hash)
 // })
+//
 
+function validateUser(hash){
+    bcrypt.compare('123', hash).then( isvalid=> console.log(isvalid) )
+}
+validateUser("$2b$04$uy5FWXTyu4U8hxwD984UHeSG41feYCx6LF0Ws9.FU9vsoshj.13iS")
 
-// function validateUser(hash){
-//     bcrypt.compare('248f', hash).then( isvalid=> console.log(isvalid) )
-// }
-// validateUser("$2b$04$ohz76nYPgt.Npyt7abWQceMivA4irG5Zh17RWK4Syv3YlsrEvMH/q")
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'ilfat1991',
-    database: 'rili_meta'
+    database: 'rili_db'
   })
-  // let q = "select*from teachers INNER JOIN tokens USING(teacher_id) where teacher_id=?"
-  // let q1 = "update tokens set token=? where id_tokens=?"
-  // db.query(q1, ["12345", 2],(err, data)=>{
-  //   try {
-  //       if(err) throw "Error on top"
-  //       console.log(data.changedRows)
-  //   } catch (error) {
-  //       console.log("Error:", error)
-  //   }
-    
-  //   // let {pass, ...dataTo} = data[0]
-  //   // console.log(dataTo)
-  //   //console.log(data)
+  
+  // let param = '7В'
+  // db.query("SELECT * FROM students WHERE name LIKE ? OR surname LIKE ? OR patronymic LIKE ? OR graduation = ? OR email LIKE ? OR phone =  ?", [param+ '%', param+ '%', param+ '%',param,param+ '%',param ], (err, data)=>{
+  //     if(err) console.log(err)
+  //     console.log(data) 
   // })
-  let param = '7В'
-  db.query("SELECT * FROM students WHERE name LIKE ? OR surname LIKE ? OR patronymic LIKE ? OR graduation = ? OR email LIKE ? OR phone =  ?", [param+ '%', param+ '%', param+ '%',param,param+ '%',param ], (err, data)=>{
-      if(err) console.log(err)
-      console.log(data) 
-  })
 
 
-  db.end()
+  // db.query("select*from users where phone = ?", "+79603927490", (err, result)=>{
+  //   if(err) console.log(err)
+  //   //console.log(result)
+  //   let {pass, name, phone, checkpoints, full_name, login, ...dataToUser} = result[0]
+  //   console.log(dataToUser)
+  // })
+
+db.end()
 // const dotenv = require("dotenv").config()
 
 // let token = jwt.sign({

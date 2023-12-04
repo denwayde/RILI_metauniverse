@@ -54,21 +54,21 @@ const db = mysql.createConnection({
 
 app.post("/rili_api/login", (req, res)=>{
     
-    db.query("select*from teachers where phone = ?", [req.body.phone], async(err, data, rows)=>{        
+    db.query("select*from users where phone = ?", [req.body.phone], async(err, data, rows)=>{        
         if(err) {return res.json(err)}
         else if(data.length === 0){return res.status(401).json("Пользователь с таким номером телефона не найден")}
         else {
             let isValidPas = await bcrypt.compare(req.body.password, data[0].pass)
             if(!isValidPas){return res.status(401).json("Введен неверный пароль")}
 
-            let {pass, name, phone, checkpoints, ...dataToUser} = data[0]
+            let {pass, name, phone, checkpoints, full_name, login, ...dataToUser} = data[0]
             let token = jwt.sign(dataToUser, process.env.SECRET_KEY, {expiresIn: '12h'})
             dataToUser.token = token
 
-            db.query("UPDATE tokens SET token = ? WHERE teacher_id=?", [token, dataToUser.teacher_id], (err, result)=>{
+            db.query("UPDATE tokens SET token = ? WHERE user_id=?", [token, dataToUser.id], (err, result)=>{
                 if(err)return res.status(401).json("Error on UPDATE token")
                 if(result.changedRows == 0){
-                    db.query("insert into tokens(teacher_id, token) values(?, ?)", [dataToUser.teacher_id, token])
+                    db.query("insert into tokens(id, token) values(?, ?)", [dataToUser.id, token])
                 }
                 return res.status(200).json(dataToUser)
             })
@@ -83,9 +83,9 @@ app.post("/rili_api/check_page", token_verifyer, (req, res)=>{
     })
 })
 
-app.post("/rili_api/teacher/:id", token_verifyer, (req, res)=>{
+app.post("/rili_api/:role/:id", token_verifyer, (req, res)=>{
     //req.params.id
-    db.query("select*from teachers where teacher_id = ?", [req.params.id], (err, data)=>{
+    db.query("select*from users where id = ?", [req.params.id], (err, data)=>{
         if(err) return res.json(err)
         if(data.length === 0) return res.status(401).json("Что-то пошло не так, попробуйте авторизоваться заново")
         let {pass, phone, ...dataToTeacher} = data[0]

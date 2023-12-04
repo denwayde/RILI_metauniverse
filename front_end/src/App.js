@@ -12,6 +12,7 @@ import Teachers from './pages/Teachers';
 import ErrorPage from './pages/404';
 import Checkpoints from './pages/Сheckpoints';
 import OlimpioadApplication from './pages/olimpiad_application/OlimpiadApplication';
+import Admins from './pages/Admins';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
   {
     path: "/teacher/aplication_for_olimpiad/:id",
     element: <OlimpioadApplication/>,
+  },
+  {
+    path: "/admin/:id",
+    element: <Admins/>,
   },
 ]);
 
