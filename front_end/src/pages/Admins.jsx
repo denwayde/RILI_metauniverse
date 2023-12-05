@@ -15,6 +15,7 @@ const Admins = () => {
        const fetchTeachersData = async ()=>{
            await axiosInterceptors.post("/check_page")
                .then(data=>{
+                //console.log(data.data)
                    if (data.data) {
                        setIsValid(true)
                    }
@@ -41,7 +42,7 @@ const Admins = () => {
        if(e.target.value.length >= 3){
            await axiosInterceptors.post("/search_for_checkpoints", bodyForm)
                .then(data =>{
-                   //console.log(data.data)
+                   console.log(data.data)
                    if(data.data){
                        setRespondForSearch(data.data)
                    }
@@ -53,6 +54,9 @@ const Admins = () => {
        }
    }
 
+   let showInfo = (e)=>{
+    console.log(e.currentTarget.id)
+   }
 
   return isValid ? (
     <>
@@ -60,10 +64,29 @@ const Admins = () => {
       <div className="container">
         <div className="row">
           <div className="input-group mb-3">
-            <input type="text" className="form-control" placeholder="7а || Иванов Иван || Уфа" aria-label="Recipient's username" aria-describedby="button-addon2" onInput={findStudents}/>
+            <input type="text" className="form-control" placeholder="Введите класс или ФИО" onInput={findStudents}/>
             <button className="btn btn-outline-primary" type="button" id="button-addon2">ПОИСК</button>
           </div>
         </div>
+
+        <div className="modal fade show" id="staticBackdropLive" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLiveLabel" style={{display: "block"}} aria-modal="true" role="dialog">
+            <div className="modal-dialog">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h1 className="modal-title fs-5" id="staticBackdropLiveLabel">Modal title</h1>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div className="modal-body">
+                    <p>I will not close if you click outside of me. Don't even try to press escape key.</p>
+                </div>
+                <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" className="btn btn-primary">Understood</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
         { respondForSearch.length !== 0 &&
             (<ul className="list-group">
               {(()=>{
@@ -72,13 +95,16 @@ const Admins = () => {
                     let student = respondForSearch[i]
                     listItems.push(
                         <li key={i} className="list-group-item d-flex justify-content-between align-items-center">
-                            <span className="studentName">{student.name} {student.surname} {student.patronymic}</span>
-                            <span className="studentEmail" style={{color: '#6c757d' }}>{student.email}</span>
-                            <span className="studentPhone" style={{color: '#6c757d' }}>{student.phone}</span>
+                            <span className="studentName" style={{width: "30%"}}>{student.name} {student.surname} {student.patronymic}</span>
+                            
+                                <span className="studentEmail" style={{color: '#6c757d' }}>{student.graduation}</span>
+                                <span className="studentEmail" style={{color: '#6c757d' }}>{student.email}</span>
+                                <span className="studentPhone" style={{color: '#6c757d' }}>{student.phone}</span>
+                            
                             <span style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
 
-                                <span className="btn btn-outline-primary m-1" id={'subtract_'+ student.id_student+'_'+student.checkpoints}>
-                                <span className="textInBtn">Инфо</span> <Info/>
+                                <span className="btn btn-outline-primary m-1" id={student.id_student} onClick={showInfo}>
+                                    <span className="textInBtn">Инфо</span> <Info/>
                                 </span>
                                 
                             </span>

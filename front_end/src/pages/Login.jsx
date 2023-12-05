@@ -175,10 +175,10 @@ const Login = ()=>{
             phone: inputNumField.valueElements,
             password: inputPasField.valueElements
         }
-        let headers = {
-            'Authorization': 'Bearer' ,
-        }
-        await axiosInterceptors.post("/login", bodyForm, headers).then(data=>{
+        // let headers = {
+        //     'Authorization': 'Bearer' ,
+        // }
+        await axiosInterceptors.post("/login", bodyForm).then(data=>{
             //console.log(data)
             if(data.data){
                 console.log(data)

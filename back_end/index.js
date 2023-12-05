@@ -61,13 +61,16 @@ app.post("/rili_api/login", (req, res)=>{
             let isValidPas = await bcrypt.compare(req.body.password, data[0].pass)
             if(!isValidPas){return res.status(401).json("Введен неверный пароль")}
 
-            let {pass, name, phone, checkpoints, full_name, login, ...dataToUser} = data[0]
+            let {pass, phone, checkpoints, login, ...dataToUser} = data[0]
+            //console.log(dataToUser)
             let token = jwt.sign(dataToUser, process.env.SECRET_KEY, {expiresIn: '12h'})
             dataToUser.token = token
-
+            //console.log(dataToUser)
             db.query("UPDATE tokens SET token = ? WHERE user_id=?", [token, dataToUser.id], (err, result)=>{
-                if(err)return res.status(401).json("Error on UPDATE token")
-                if(result.changedRows == 0){
+                if(err) return res.status(401).json(err.sqlMessage)
+                //console.log(err)//--------------------------------------------------ВАЩЕ НЕ ПОНЯЛ ЧТО ТУТ БЫЛО----------------
+                //console.log(result)
+                else if(result.changedRows == 0){
                     db.query("insert into tokens(user_id, token) values(?, ?)", [dataToUser.id, token])
                 }
                 return res.status(200).json(dataToUser)
