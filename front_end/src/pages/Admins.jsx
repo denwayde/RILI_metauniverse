@@ -53,9 +53,18 @@ const Admins = () => {
                })
        }
    }
-
+   let [isModal, setIsModal] = useState(false)
+   let [personInModal, setPersonInModal] = useState({})
    let showInfo = (e)=>{
-    console.log(e.currentTarget.id)
+    setIsModal(true)
+    //console.log(respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0])
+    setPersonInModal(
+        respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0]
+    )
+   }
+   
+   let closeModal = ()=>{
+    setIsModal(false)
    }
 
   return isValid ? (
@@ -69,23 +78,26 @@ const Admins = () => {
           </div>
         </div>
 
-        <div className="modal fade show" id="staticBackdropLive" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLiveLabel" style={{display: "block"}} aria-modal="true" role="dialog">
+{/* Modalnoe okno */}
+    { isModal ?
+        <div className="modal fade show" id="staticBackdropLive" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLiveLabel" style={{display: "block"}} aria-modal="true" role="dialog">
             <div className="modal-dialog">
                 <div className="modal-content">
-                <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="staticBackdropLiveLabel">Modal title</h1>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div className="modal-body">
-                    <p>I will not close if you click outside of me. Don't even try to press escape key.</p>
-                </div>
-                <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" className="btn btn-primary">Understood</button>
-                </div>
+                    <div className="modal-header">
+                        <h1 className="modal-title fs-5" id="staticBackdropLiveLabel">{""+personInModal.surname+" "+personInModal.name}</h1>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={closeModal}></button>
+                    </div>
+                    <div className="modal-body">
+                        <p>I will not close if you click outside of me. Don't even try to press escape key.</p>
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-primary">Выбрать</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </div> : null
+    }
+{/* Modalnoe okno */}
 
         { respondForSearch.length !== 0 &&
             (<ul className="list-group">
