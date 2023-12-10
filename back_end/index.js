@@ -88,7 +88,7 @@ app.post("/rili_api/check_page", token_verifyer, (req, res)=>{
 
 app.post("/rili_api/:role/:id", token_verifyer, (req, res)=>{
     //req.params.id
-    db.query("select*from users where id = ?", [req.params.id], (err, data)=>{
+    db.query("select*from users where user_id = ?", [req.params.id], (err, data)=>{
         if(err) return res.json(err)
         if(data.length === 0) return res.status(401).json("Что-то пошло не так, попробуйте авторизоваться заново")
         let {pass, phone, ...dataToTeacher} = data[0]
@@ -99,6 +99,14 @@ app.post("/rili_api/:role/:id", token_verifyer, (req, res)=>{
 app.post("/rili_api/search_for_checkpoints", token_verifyer, async(req,res)=>{
     //console.log(req.body)
     db.query("SELECT * FROM students WHERE name LIKE ? OR surname LIKE ? OR patronymic LIKE ? OR graduation = ? OR email LIKE ? OR phone LIKE ?", [req.body.search + '%', req.body.search + '%', req.body.search + '%', req.body.search, req.body.search + '%', req.body.search + '%'], (err, data)=>{
+        if(err) return res.status(400).json({"error": err})
+        if(data.length === 0) return res.status(200).json({"respond": "Такого ученика нету. Убедитесь в правильности поиского запроса"})
+        return res.status(200).json(data)
+    })
+})
+
+app.post("/rili_api/search_for_admins", token_verifyer, async(req, res)=>{
+    db.query("SELECT * FROM students LEFT JOIN users ON students.ruk_id = users.user_id RIGHT JOIN vospits ON students.vosp_id = vospits.vospit_id WHERE students.name LIKE ? OR students.surname LIKE ? OR students.patronymic LIKE ? OR students.graduation = ? OR students.email LIKE ? OR students.phone LIKE ?", [req.body.search + '%', req.body.search + '%', req.body.search + '%', req.body.search, req.body.search + '%', req.body.search + '%'], (err, data)=>{
         if(err) return res.status(400).json({"error": err})
         if(data.length === 0) return res.status(200).json({"respond": "Такого ученика нету. Убедитесь в правильности поиского запроса"})
         return res.status(200).json(data)

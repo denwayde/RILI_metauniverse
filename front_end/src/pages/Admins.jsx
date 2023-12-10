@@ -40,7 +40,7 @@ const Admins = () => {
            search: searchElement
        }
        if(e.target.value.length >= 3){
-           await axiosInterceptors.post("/search_for_checkpoints", bodyForm)
+           await axiosInterceptors.post("/search_for_admins", bodyForm)
                .then(data =>{
                    console.log(data.data)
                    if(data.data){
@@ -84,12 +84,47 @@ const Admins = () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h1 className="modal-title fs-5" id="staticBackdropLiveLabel">{""+personInModal.surname+" "+personInModal.name}</h1>
+                        <h1 className="modal-title fs-5" id="staticBackdropLiveLabel"></h1>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={closeModal}></button>
                     </div>
                     <div className="modal-body">
-                        <p>I will not close if you click outside of me. Don't even try to press escape key.</p>
+                        <h3>
+                            {""+personInModal.surname+" "+personInModal.name + " " +personInModal.patronymic}
+                            <small style={{fontSize: '.6em'}}>
+                                {' ('+personInModal.gender +')' }
+                            </small>
+                        </h3>
                     </div>
+                    <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
+                        
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Телефон:</p>
+                        <h6>{personInModal.phone}</h6>
+
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Email:</p>
+                        <h6><a href={'mailto:'+personInModal.email} target='_blank' className="btn btn-light">{personInModal.email}</a></h6>
+                        
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Адрес:</p>
+                        <h6>{personInModal.adress}</h6>
+
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>СНИЛС:</p>
+                        <h6>{personInModal.snils}</h6>
+
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Комната:</p>
+                        <h6>{personInModal.room}</h6>
+                    </div>
+
+                    <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Классрук:</p>
+                        <h6><a href='#' className="btn btn-light" >{personInModal.full_name}</a></h6>
+
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Воспитатель:</p>
+                        <h6><a href='#' className="btn btn-light">{personInModal.vospit_name}</a></h6>
+                    </div>
+
+                    <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
+
+                    </div>
+
                     <div className="modal-footer">
                         <button type="button" className="btn btn-primary">Выбрать</button>
                     </div>

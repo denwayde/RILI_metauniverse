@@ -36,13 +36,11 @@ const db = mysql.createConnection({
   //     console.log(data) 
   // })
 
-
-  // db.query("select*from users where phone = ?", "+79603927490", (err, result)=>{
-  //   if(err) console.log(err)
-  //   //console.log(result)
-  //   let {pass, name, phone, checkpoints, full_name, login, ...dataToUser} = result[0]
-  //   console.log(dataToUser)
-  // })
+  const searchValue = "7а"
+  db.query("SELECT * FROM students LEFT JOIN users ON students.ruk_id = users.user_id RIGHT JOIN vospits ON students.vosp_id = vospits.vospit_id WHERE students.name LIKE ? OR students.surname LIKE ? OR students.patronymic LIKE ? OR students.graduation = ? OR students.email LIKE ? OR students.phone LIKE ?", [searchValue, searchValue, searchValue, searchValue, searchValue, searchValue], (err, result)=>{
+    if(err) console.log(err)
+    console.log(result)//------------------------------------МЕНЯЙ НАЗВАНИЯ В БД У УЧИТЕЛЕЙ И ВОСПИТОВ--------------------------------------------
+  })
 
 db.end()
 // const dotenv = require("dotenv").config()
