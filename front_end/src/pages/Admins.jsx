@@ -9,7 +9,13 @@ import {Info, Book, Mail, User, PenTool} from 'react-feather';
 const Admins = () => {
   let [isValid, setIsValid] = useState(false)
   const navigateTo = useNavigate()
-
+  let [searchElement, setSearchElement] = useState('')
+    
+  let [respondForSearch, setRespondForSearch] = useState([])
+  let [messageIfErr, setMessageIfErr] = useState('')
+  let [isModal, setIsModal] = useState(false)
+  let [personInModal, setPersonInModal] = useState({})
+  let [birth, setBirth] = useState()
   const axiosInterceptors = useInterceptors()
    useEffect(()=>{
        const fetchTeachersData = async ()=>{
@@ -25,13 +31,15 @@ const Admins = () => {
                })
        }
        fetchTeachersData()
+       if(personInModal.birth_day){
+        setBirth(
+            new Date(personInModal.birth_day)
+        )
+    }
        //setUsrId(localStorage.getItem('teacherId'))
-   },[axiosInterceptors, navigateTo])
+   },[axiosInterceptors, navigateTo, personInModal])
 
-   let [searchElement, setSearchElement] = useState('')
-    
-   let [respondForSearch, setRespondForSearch] = useState([])
-   let [messageIfErr, setMessageIfErr] = useState('')
+   
 
    async function findStudents(e){
        e.preventDefault()
@@ -53,25 +61,18 @@ const Admins = () => {
                })
        }
    }
-   let [isModal, setIsModal] = useState(false)
-   let [personInModal, setPersonInModal] = useState({})
-   let [birth, setBirth] = useState()
+ 
 
    let showInfo = (e)=>{
     setIsModal(true)
-    //console.log(respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0])
     setPersonInModal(
         respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0]
     )
-    setBirth(
-        new Date(personInModal.birth_day)
-    )
-    //console.log(birth)
    }
 
    let birthDate = ()=>{
     let localBirth = ''
-    if(birth.getMonth()==0){
+    if(birth.getMonth()===0){
         return localBirth = ''+birth.getDate()+'.01.'+birth.getFullYear()
     }
     else if(birth.getMonth()>=9){
