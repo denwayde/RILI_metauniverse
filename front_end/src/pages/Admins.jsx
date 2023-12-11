@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import HeaderNav from './components/Header'
 import useInterceptors from "../hooks/UseInterceptor";
 import { useNavigate } from 'react-router-dom';
-import {Info} from 'react-feather';
+import {Info, Book, Mail, User, PenTool} from 'react-feather';
 
 
 
@@ -55,12 +55,36 @@ const Admins = () => {
    }
    let [isModal, setIsModal] = useState(false)
    let [personInModal, setPersonInModal] = useState({})
+   let [birth, setBirth] = useState()
+
    let showInfo = (e)=>{
     setIsModal(true)
     //console.log(respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0])
     setPersonInModal(
         respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0]
     )
+    setBirth(
+        new Date(personInModal.birth_day)
+    )
+    //console.log(birth)
+   }
+
+   let birthDate = ()=>{
+    let localBirth = ''
+    if(birth.getMonth()==0){
+        return localBirth = ''+birth.getDate()+'.01.'+birth.getFullYear()
+    }
+    else if(birth.getMonth()>=9){
+        return localBirth = ''+birth.getDate()+'.'+(birth.getMonth()+1)+'.'+birth.getFullYear()
+    }
+    else {
+        return localBirth = ''+birth.getDate()+'.0'+(birth.getMonth()+1)+'.'+birth.getFullYear()
+    }
+   }
+
+   let fullAge = ()=>{
+    let yearNow = new Date().getFullYear()
+    return yearNow - birth.getFullYear()
    }
    
    let closeModal = ()=>{
@@ -95,34 +119,60 @@ const Admins = () => {
                             </small>
                         </h3>
                     </div>
+
+                    <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
+                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Класс:</p>
+                    <h6>{personInModal.graduation}</h6>
+                    </div>
+
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
                         
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Телефон:</p>
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Телефон:</p>
                         <h6>{personInModal.phone}</h6>
 
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Email:</p>
-                        <h6><a href={'mailto:'+personInModal.email} target='_blank' className="btn btn-light">{personInModal.email}</a></h6>
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Email:</p>
+                        <h6><a href={'mailto:'+personInModal.email} target='_blank' className="btn btn-light"><span style={{color: '#0d6efd'}}><Mail /></span> {personInModal.email}</a></h6>
                         
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Адрес:</p>
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Адрес:</p>
                         <h6>{personInModal.adress}</h6>
 
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>СНИЛС:</p>
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>СНИЛС:</p>
                         <h6>{personInModal.snils}</h6>
 
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Комната:</p>
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Комната:</p>
                         <h6>{personInModal.room}</h6>
                     </div>
 
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Классрук:</p>
-                        <h6><a href='#' className="btn btn-light" >{personInModal.full_name}</a></h6>
-
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.8rem'}}>Воспитатель:</p>
-                        <h6><a href='#' className="btn btn-light">{personInModal.vospit_name}</a></h6>
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Год рождения:</p>
+                        <h6>{birthDate()}</h6>
+                        
+                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Полных лет:</p>
+                        <h6>{fullAge()}</h6>
                     </div>
 
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
+                        <div className="row">
+                            <div className="col">
+                                <h6><a className="btn btn-light" ><span style={{color: '#d63384'}}><User/></span> Мать</a></h6>
+                                <h6><a className="btn btn-light"><span style={{color: '#0d6efd'}}><User/></span> Отец</a></h6>
+                            </div>
+                            <div className="col">
+                                <h6><a className="btn btn-light" ><span style={{color: '#198754'}}><PenTool/></span> Классрук</a></h6>
+                                <h6><a className="btn btn-light"><span style={{color: '#198754'}}><PenTool/></span> Воспитатель</a></h6>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
+                        <div className="row">
+                            <div className="col">
+                                <h6><a className="btn btn-light" ><span style={{color: '#198754'}}><Book/></span> Башкирский</a></h6>
+                            </div>
+                            <div className="col">
+                                <h6><a className="btn btn-light" ><span style={{color: '#198754'}}><Book/></span> Английский</a></h6>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="modal-footer">
