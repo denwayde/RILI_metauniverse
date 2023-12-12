@@ -10,7 +10,6 @@ const Admins = () => {
   let [isValid, setIsValid] = useState(false)
   const navigateTo = useNavigate()
   let [searchElement, setSearchElement] = useState('')
-    
   let [respondForSearch, setRespondForSearch] = useState([])
   let [messageIfErr, setMessageIfErr] = useState('')
   let [isModal, setIsModal] = useState(false)
@@ -28,19 +27,12 @@ const Admins = () => {
                    }
                })
                .catch((error)=>{
-                   navigateTo("/error_page?statusCode=500&errorMessage="+ error)//TUT KAT TO ETOT MOMENT NUJNO POMENYAT
+                   navigateTo("/error_page?statusCode=500&errorMessage="+ error)
                })
        }
        fetchTeachersData()
 
-       if(personInModal.birth_day){
-        setBirth( async(br)=>{
-            return br = await new Date(personInModal.birth_day)
-        }
-        )
-    }
-       //setUsrId(localStorage.getItem('teacherId'))
-   },[axiosInterceptors, navigateTo, personInModal])
+   },[axiosInterceptors, navigateTo])
 
    
 
@@ -68,28 +60,29 @@ const Admins = () => {
 
    let showInfo =  (e)=>{
     setIsModal(true)
-    setPersonInModal( async(newArr) => {
-        return newArr = await respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0]
-    }
-    )
+    setPersonInModal(respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0])
+    setBirth(new Date(personInModal.birth_day))//-------------------------------------------------------vot eto vse hernya. uberay etu funcciu-------delay po drugomu-----
    }
 
-   let birthDate = ()=>{
-    let localBirth = ''
-    if(birth.getMonth()===0){
-        return localBirth = ''+birth.getDate()+'.01.'+birth.getFullYear()
-    }
-    else if(birth.getMonth()>=9){
-        return localBirth = ''+birth.getDate()+'.'+(birth.getMonth()+1)+'.'+birth.getFullYear()
-    }
-    else {
-        return localBirth = ''+birth.getDate()+'.0'+(birth.getMonth()+1)+'.'+birth.getFullYear()
-    }
+   function birthDate(){
+    
+    console.log(""+birth+" from birthDate function")
+    // let localBirth = ''
+    // if(birth.getMonth()===0){
+    //     return localBirth = ''+birth.getDate()+'.01.'+birth.getFullYear()
+    // }
+    // else if(birth.getMonth()>=9){
+    //     return localBirth = ''+birth.getDate()+'.'+(birth.getMonth()+1)+'.'+birth.getFullYear()
+    // }
+    // else {
+    //     return localBirth = ''+birth.getDate()+'.0'+(birth.getMonth()+1)+'.'+birth.getFullYear()
+    // }
    }
 
-   let fullAge = ()=>{
-    let yearNow = new Date().getFullYear()
-    return yearNow - birth.getFullYear()
+   function fullAge(){
+    console.log(""+birth+" fron fullAge func")
+    // let yearNow = new Date().getFullYear()
+    // return yearNow - birth.getFullYear()
    }
    
    let closeModal = ()=>{
