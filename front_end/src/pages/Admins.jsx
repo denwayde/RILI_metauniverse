@@ -17,7 +17,8 @@ const Admins = () => {
   let [personInModal, setPersonInModal] = useState({})
   let [birth, setBirth] = useState()
   const axiosInterceptors = useInterceptors()
-   useEffect(()=>{
+   
+  useEffect(()=>{
        const fetchTeachersData = async ()=>{
            await axiosInterceptors.post("/check_page")
                .then(data=>{
@@ -31,9 +32,11 @@ const Admins = () => {
                })
        }
        fetchTeachersData()
+
        if(personInModal.birth_day){
-        setBirth(
-            new Date(personInModal.birth_day)
+        setBirth( async(br)=>{
+            return br = await new Date(personInModal.birth_day)
+        }
         )
     }
        //setUsrId(localStorage.getItem('teacherId'))
@@ -63,10 +66,11 @@ const Admins = () => {
    }
  
 
-   let showInfo = (e)=>{
+   let showInfo =  (e)=>{
     setIsModal(true)
-    setPersonInModal(
-        respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0]
+    setPersonInModal( async(newArr) => {
+        return newArr = await respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0]
+    }
     )
    }
 
