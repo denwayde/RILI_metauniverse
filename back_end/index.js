@@ -68,7 +68,7 @@ app.post("/rili_api/login", (req, res)=>{
             //console.log(dataToUser)
             db.query("UPDATE tokens SET token = ? WHERE user_id=?", [token, dataToUser.id], (err, result)=>{
                 if(err) return res.status(401).json(err.sqlMessage)
-                //console.log(err)//--------------------------------------------------ВАЩЕ НЕ ПОНЯЛ ЧТО ТУТ БЫЛО----------------
+                //console.log(err)//--------------------------------------------------ВАЩЕ НЕ ПОНЯЛ ЧТО ТУТ БЫЛО----------------)))))
                 //console.log(result)
                 else if(result.changedRows == 0){
                     db.query("insert into tokens(user_id, token) values(?, ?)", [dataToUser.id, token])
@@ -87,7 +87,7 @@ app.post("/rili_api/check_page", token_verifyer, (req, res)=>{
 })
 
 app.post("/rili_api/:role/:id", token_verifyer, (req, res)=>{
-    //req.params.id
+    
     db.query("select*from users where user_id = ?", [req.params.id], (err, data)=>{
         if(err) return res.json(err)
         if(data.length === 0) return res.status(401).json("Что-то пошло не так, попробуйте авторизоваться заново")

@@ -14,7 +14,7 @@ const Admins = () => {
   let [messageIfErr, setMessageIfErr] = useState('')
   let [isModal, setIsModal] = useState(false)
   let [personInModal, setPersonInModal] = useState({})
-  let [birth, setBirth] = useState()
+  //let [birth, setBirth] = useState()
   const axiosInterceptors = useInterceptors()
    
   useEffect(()=>{
@@ -32,7 +32,7 @@ const Admins = () => {
        }
        fetchTeachersData()
 
-   },[axiosInterceptors, navigateTo])
+   },[axiosInterceptors, navigateTo, respondForSearch])
 
    
 
@@ -45,7 +45,7 @@ const Admins = () => {
        if(e.target.value.length >= 3){
            await axiosInterceptors.post("/search_for_admins", bodyForm)
                .then(data =>{
-                   console.log(data.data)
+                   console.log(data.data)//------------------------------eto otobrajaet poiskovii zapros
                    if(data.data){
                        setRespondForSearch(data.data)
                    }
@@ -61,29 +61,9 @@ const Admins = () => {
    let showInfo =  (e)=>{
     setIsModal(true)
     setPersonInModal(respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0])
-    setBirth(new Date(personInModal.birth_day))//-------------------------------------------------------vot eto vse hernya. uberay etu funcciu-------delay po drugomu-----
-   }
-
-   function birthDate(){
     
-    console.log(""+birth+" from birthDate function")
-    // let localBirth = ''
-    // if(birth.getMonth()===0){
-    //     return localBirth = ''+birth.getDate()+'.01.'+birth.getFullYear()
-    // }
-    // else if(birth.getMonth()>=9){
-    //     return localBirth = ''+birth.getDate()+'.'+(birth.getMonth()+1)+'.'+birth.getFullYear()
-    // }
-    // else {
-    //     return localBirth = ''+birth.getDate()+'.0'+(birth.getMonth()+1)+'.'+birth.getFullYear()
-    // }
    }
 
-   function fullAge(){
-    console.log(""+birth+" fron fullAge func")
-    // let yearNow = new Date().getFullYear()
-    // return yearNow - birth.getFullYear()
-   }
    
    let closeModal = ()=>{
     setIsModal(false)
@@ -106,7 +86,6 @@ const Admins = () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h1 className="modal-title fs-5" id="staticBackdropLiveLabel"></h1>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={closeModal}></button>
                     </div>
                     <div className="modal-body">
@@ -119,8 +98,21 @@ const Admins = () => {
                     </div>
 
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
-                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Класс:</p>
-                    <h6>{personInModal.graduation}</h6>
+                        <div className="row">
+                            <div className="col">
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Класс:</p>
+                                <h6>{personInModal.graduation}</h6>
+                            </div>
+                            <div className="col">
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Комната:</p>
+                                <h6>{personInModal.room}</h6>
+                            </div>
+                            <div className="col">
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Объяснительных:</p>
+                                <h6>{personInModal.violations}</h6>
+                            </div>
+                        </div>
+                    
                     </div>
 
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
@@ -129,35 +121,41 @@ const Admins = () => {
                         <h6>{personInModal.phone}</h6>
 
                         <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Email:</p>
-                        <h6><a href={'mailto:'+personInModal.email} target='_blank' className="btn btn-light"><span style={{color: '#0d6efd'}}><Mail /></span> {personInModal.email}</a></h6>
+                        <h6><a href={'mailto:'+personInModal.email} target='_blank' rel="noreferrer" className="btn btn-light"><span style={{color: '#0d6efd'}}><Mail /></span> {personInModal.email}</a></h6>
                         
                         <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Адрес:</p>
                         <h6>{personInModal.adress}</h6>
 
                         <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>СНИЛС:</p>
                         <h6>{personInModal.snils}</h6>
-
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Комната:</p>
-                        <h6>{personInModal.room}</h6>
+                
                     </div>
 
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
                         <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Год рождения:</p>
-                        <h6>{birthDate()}</h6>
+                        <h6>{personInModal.birth_day}</h6>
                         
                         <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Полных лет:</p>
-                        <h6>{fullAge()}</h6>
+                        <h6>
+                            {
+                                (()=>{
+                                    let yearNow = new Date().getFullYear()
+                                    let birthYear = parseInt(personInModal.birth_day.split('.')[2])
+                                    return yearNow - birthYear
+                                })()
+                            }
+                        </h6>
                     </div>
 
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
                         <div className="row">
                             <div className="col">
-                                <h6><a className="btn btn-light" ><span style={{color: '#d63384'}}><User/></span> Мать</a></h6>
-                                <h6><a className="btn btn-light"><span style={{color: '#0d6efd'}}><User/></span> Отец</a></h6>
+                                <h6><button className="btn btn-light" ><span style={{color: '#d63384'}}><User/></span> Мать</button></h6>
+                                <h6><button className="btn btn-light"><span style={{color: '#0d6efd'}}><User/></span> Отец</button></h6>
                             </div>
                             <div className="col">
-                                <h6><a className="btn btn-light" ><span style={{color: '#198754'}}><PenTool/></span> Классрук</a></h6>
-                                <h6><a className="btn btn-light"><span style={{color: '#198754'}}><PenTool/></span> Воспитатель</a></h6>
+                                <h6><button className="btn btn-light" ><span style={{color: '#198754'}}><PenTool/></span> Классрук</button></h6>
+                                <h6><button className="btn btn-light"><span style={{color: '#198754'}}><PenTool/></span> Воспитатель</button></h6>
                             </div>
                         </div>
                     </div>
@@ -165,10 +163,10 @@ const Admins = () => {
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
                         <div className="row">
                             <div className="col">
-                                <h6><a className="btn btn-light" ><span style={{color: '#198754'}}><Book/></span> Башкирский</a></h6>
+                                <h6><button className="btn btn-light" ><span style={{color: '#198754'}}><Book/></span> Башкирский</button></h6>
                             </div>
                             <div className="col">
-                                <h6><a className="btn btn-light" ><span style={{color: '#198754'}}><Book/></span> Английский</a></h6>
+                                <h6><button className="btn btn-light" ><span style={{color: '#198754'}}><Book/></span> Английский</button></h6>
                             </div>
                         </div>
                     </div>
