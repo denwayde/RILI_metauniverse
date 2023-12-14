@@ -87,13 +87,14 @@ app.post("/rili_api/check_page", token_verifyer, (req, res)=>{
 })
 
 app.post("/rili_api/:role/:id", token_verifyer, (req, res)=>{
-    
-    db.query("select*from users where user_id = ?", [req.params.id], (err, data)=>{
-        if(err) return res.json(err)
-        if(data.length === 0) return res.status(401).json("Что-то пошло не так, попробуйте авторизоваться заново")
-        let {pass, phone, ...dataToTeacher} = data[0]
-        return res.status(200).json(dataToTeacher)
-    })
+    if(!isNaN(req.params.id)){
+        db.query("select*from users where user_id = ?", [parseInt(req.params.id)], (err, data)=>{
+            if(err) return res.json(err)
+            if(data.length === 0) return res.status(401).json("Что-то пошло не так, попробуйте авторизоваться заново")
+            let {pass, phone, ...dataToTeacher} = data[0]
+            return res.status(200).json(dataToTeacher)
+        })
+    }
 })
 
 app.post("/rili_api/search_for_checkpoints", token_verifyer, async(req,res)=>{
@@ -111,6 +112,23 @@ app.post("/rili_api/search_for_admins", token_verifyer, async(req, res)=>{
         if(data.length === 0) return res.status(200).json({"respond": "Такого ученика нету. Убедитесь в правильности поиского запроса"})
         return res.status(200).json(data)
     })
+})
+
+app.get("/rili_api/search_for_admins/:parent/:id", token_verifyer, async(req, res)=>{//-------------------------vot tut realnaya dich------------------------------------------------------
+    if(req.params.parent==="mother"){
+        db.query(
+            "select*from parent_student left join parents on parent_student.parent_id = parents.id where studentx_id = ?",
+            [parseInt(req.params.id)],
+            (err, data)=>{
+                if(err){
+                    console.log(err)
+                }
+                console.log(data)
+                return res.status(200).json({"data": JSON.stringify(data)})
+            }
+            )
+    }
+    
 })
 
 app.get("/rili_api/change_checkpoints/:id/:chekpoints", token_verifyer, async(req, res)=>{

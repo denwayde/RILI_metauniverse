@@ -42,7 +42,7 @@ const Admins = () => {
        let bodyForm = {
            search: searchElement
        }
-       if(e.target.value.length >= 3){
+       if(e.target.value.length >= 2){
            await axiosInterceptors.post("/search_for_admins", bodyForm)
                .then(data =>{
                    console.log(data.data)//------------------------------eto otobrajaet poiskovii zapros
@@ -67,6 +67,22 @@ const Admins = () => {
    
    let closeModal = ()=>{
     setIsModal(false)
+   }
+
+    let [userInfo, setUserInfo] = useState(false)
+
+    async function getUserInfo(e){
+
+        let req = "/search_for_admins/"+e.currentTarget.id.split('_')[0]+"/"+e.currentTarget.id.split('_')[1]
+        console.log(req)
+        // let req_body = {
+        //     student_id: e.currentTarget.id.split('_')[1]
+        // }
+
+        await axiosInterceptors.get(req)
+               .then(
+                    data=>console.log(data.data)
+                )
    }
 
   return isValid ? (
@@ -147,15 +163,17 @@ const Admins = () => {
                         </h6>
                     </div>
 
+                    
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
+                    
                         <div className="row">
                             <div className="col">
-                                <h6><button className="btn btn-light" ><span style={{color: '#d63384'}}><User/></span> Мать</button></h6>
-                                <h6><button className="btn btn-light"><span style={{color: '#0d6efd'}}><User/></span> Отец</button></h6>
+                                <h6><button className="btn btn-light" id={"mother_"+personInModal.id_student} onClick={(e)=>{setUserInfo(true); getUserInfo(e); console.log("mat reners")}}><span style={{color: '#d63384'}}><User/></span> Мать</button></h6>
+                                <h6><button className="btn btn-light" id={"father_"+personInModal.id_student} ><span style={{color: '#0d6efd'}}><User/></span> Отец</button></h6>
                             </div>
                             <div className="col">
-                                <h6><button className="btn btn-light" ><span style={{color: '#198754'}}><PenTool/></span> Классрук</button></h6>
-                                <h6><button className="btn btn-light"><span style={{color: '#198754'}}><PenTool/></span> Воспитатель</button></h6>
+                                <h6><button className="btn btn-light" id={"teacher_"+personInModal.id_student} ><span style={{color: '#198754'}}><PenTool/></span> Классрук</button></h6>
+                                <h6><button className="btn btn-light" id={"vospit_"+personInModal.id_student} ><span style={{color: '#198754'}}><PenTool/></span> Воспитатель</button></h6>
                             </div>
                         </div>
                     </div>
