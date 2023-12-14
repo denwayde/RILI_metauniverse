@@ -81,7 +81,7 @@ const Admins = () => {
 
         await axiosInterceptors.get(req)
                .then(
-                    data=>console.log(data.data)
+                    data=>console.log(JSON.parse(data.data.data))
                 )
    }
 
