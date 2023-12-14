@@ -69,21 +69,20 @@ const Admins = () => {
     setIsModal(false)
    }
 
-    let [userInfo, setUserInfo] = useState(false)
+    let [userInfoPanel, setUserInfoPanel] = useState(true)
+    let [userData, setUserData] = useState({})
 
     async function getUserInfo(e){
-
         let req = "/search_for_admins/"+e.currentTarget.id.split('_')[0]+"/"+e.currentTarget.id.split('_')[1]
         console.log(req)
-        // let req_body = {
-        //     student_id: e.currentTarget.id.split('_')[1]
-        // }
-
         await axiosInterceptors.get(req)
                .then(
-                    data=>console.log(JSON.parse(data.data.data))
+                    // data=>console.log(JSON.parse(data.data.data))
+                    data =>{
+                        setUserData(JSON.parse(data.data.data))
+                    }  
                 )
-   }
+    }
 
   return isValid ? (
     <>
@@ -165,17 +164,31 @@ const Admins = () => {
 
                     
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
-                    
-                        <div className="row">
-                            <div className="col">
-                                <h6><button className="btn btn-light" id={"mother_"+personInModal.id_student} onClick={(e)=>{setUserInfo(true); getUserInfo(e); console.log("mat reners")}}><span style={{color: '#d63384'}}><User/></span> Мать</button></h6>
-                                <h6><button className="btn btn-light" id={"father_"+personInModal.id_student} ><span style={{color: '#0d6efd'}}><User/></span> Отец</button></h6>
+                        {userInfoPanel ?
+                            <div className="row">
+                                <div className="col">
+                                    <h6><button className="btn btn-light" id={"mother_"+personInModal.id_student} onClick={
+                                        (e)=>{
+                                            setUserInfoPanel(false);
+                                            getUserInfo(e);
+                                            //console.log(userData)
+                                        }
+                                        }><span style={{color: '#d63384'}}><User/></span> Мать</button></h6>
+                                    <h6><button className="btn btn-light" id={"father_"+personInModal.id_student} ><span style={{color: '#0d6efd'}}><User/></span> Отец</button></h6>
+                                </div>
+                                <div className="col">
+                                    <h6><button className="btn btn-light" id={"teacher_"+personInModal.id_student} ><span style={{color: '#198754'}}><PenTool/></span> Классрук</button></h6>
+                                    <h6><button className="btn btn-light" id={"vospit_"+personInModal.id_student} ><span style={{color: '#198754'}}><PenTool/></span> Воспитатель</button></h6>
+                                </div>
+                            </div> : 
+                            <div className="row">
+                                <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
+                        
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Name:</p>
+                                <h6>{userData.name}</h6>
+                                </div>
                             </div>
-                            <div className="col">
-                                <h6><button className="btn btn-light" id={"teacher_"+personInModal.id_student} ><span style={{color: '#198754'}}><PenTool/></span> Классрук</button></h6>
-                                <h6><button className="btn btn-light" id={"vospit_"+personInModal.id_student} ><span style={{color: '#198754'}}><PenTool/></span> Воспитатель</button></h6>
-                            </div>
-                        </div>
+                        }
                     </div>
 
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
