@@ -72,14 +72,16 @@ const Admins = () => {
     let [userInfoPanel, setUserInfoPanel] = useState(true)
     let [userData, setUserData] = useState({})
 
-    async function getUserInfo(e){
+    function getUserInfo(e){
         let req = "/search_for_admins/"+e.currentTarget.id.split('_')[0]+"/"+e.currentTarget.id.split('_')[1]
         console.log(req)
-        await axiosInterceptors.get(req)
+        axiosInterceptors.get(req)
                .then(
                     // data=>console.log(JSON.parse(data.data.data))
                     data =>{
-                        setUserData(JSON.parse(data.data.data))
+                        console.log(JSON.parse(data.data.data))
+                        let userData = JSON.parse(data.data.data)
+                        setUserData(prev=>({...prev,...userData}))
                     }  
                 )
     }
@@ -171,7 +173,7 @@ const Admins = () => {
                                         (e)=>{
                                             setUserInfoPanel(false);
                                             getUserInfo(e);
-                                            //console.log(userData)
+                                            console.log(userData)
                                         }
                                         }><span style={{color: '#d63384'}}><User/></span> Мать</button></h6>
                                     <h6><button className="btn btn-light" id={"father_"+personInModal.id_student} ><span style={{color: '#0d6efd'}}><User/></span> Отец</button></h6>
