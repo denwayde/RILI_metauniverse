@@ -16,7 +16,10 @@ const Admins = () => {
   let [personInModal, setPersonInModal] = useState({})
   //let [birth, setBirth] = useState()
   const axiosInterceptors = useInterceptors()
-   
+
+
+    let [userInfoPanel, setUserInfoPanel] = useState(true)
+    let [userData, setUserData] = useState()
   useEffect(()=>{
        const fetchTeachersData = async ()=>{
            await axiosInterceptors.post("/check_page")
@@ -32,7 +35,7 @@ const Admins = () => {
        }
        fetchTeachersData()
 
-   },[axiosInterceptors, navigateTo, respondForSearch])
+   },[axiosInterceptors, navigateTo])
 
    
 
@@ -69,21 +72,17 @@ const Admins = () => {
     setIsModal(false)
    }
 
-    let [userInfoPanel, setUserInfoPanel] = useState(true)
-    let [userData, setUserData] = useState({})
+    
 
-    function getUserInfo(e){
+    async function getUserInfo(e){
         let req = "/search_for_admins/"+e.currentTarget.id.split('_')[0]+"/"+e.currentTarget.id.split('_')[1]
         console.log(req)
-        axiosInterceptors.get(req)
-               .then(
-                    // data=>console.log(JSON.parse(data.data.data))
-                    data =>{
-                        console.log(JSON.parse(data.data.data))
-                        let userData = JSON.parse(data.data.data)
-                        setUserData(prev=>({...prev,...userData}))
-                    }  
-                )
+        let respond = await axiosInterceptors.get(req)
+        //console.log(respond.data.data)//----------eto normalno pokazivaet data
+        setUserInfoPanel(false)
+        setUserData(JSON.parse(respond.data.data))
+        
+        
     }
 
   return isValid ? (
@@ -169,13 +168,7 @@ const Admins = () => {
                         {userInfoPanel ?
                             <div className="row">
                                 <div className="col">
-                                    <h6><button className="btn btn-light" id={"mother_"+personInModal.id_student} onClick={
-                                        (e)=>{
-                                            setUserInfoPanel(false);
-                                            getUserInfo(e);
-                                            console.log(userData)
-                                        }
-                                        }><span style={{color: '#d63384'}}><User/></span> Мать</button></h6>
+                                    <h6><button className="btn btn-light" id={"mother_"+personInModal.id_student} onClick={getUserInfo}><span style={{color: '#d63384'}}><User/></span> Мать</button></h6>
                                     <h6><button className="btn btn-light" id={"father_"+personInModal.id_student} ><span style={{color: '#0d6efd'}}><User/></span> Отец</button></h6>
                                 </div>
                                 <div className="col">
@@ -187,7 +180,7 @@ const Admins = () => {
                                 <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
                         
                                 <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Name:</p>
-                                <h6>{userData.name}</h6>
+                                {/* <h6>{userData[0].name}</h6>------------------------------------------------------нихрена себе работает!!!! */}
                                 </div>
                             </div>
                         }
