@@ -107,14 +107,14 @@ app.post("/rili_api/search_for_checkpoints", token_verifyer, async(req,res)=>{
 })
 
 app.post("/rili_api/search_for_admins", token_verifyer, async(req, res)=>{
-    db.query("SELECT * FROM students WHERE students.name LIKE ? OR students.surname LIKE ? OR students.patronymic LIKE ? OR students.graduation = ? OR students.email LIKE ? OR students.phone LIKE ?", [req.body.search + '%', req.body.search + '%', req.body.search + '%', req.body.search, req.body.search + '%', req.body.search + '%'], (err, data)=>{
+    db.query("SELECT * FROM students  WHERE students.name LIKE ? OR students.surname LIKE ? OR students.patronymic LIKE ? OR students.graduation = ? OR students.email LIKE ? OR students.phone LIKE ?", [req.body.search + '%', req.body.search + '%', req.body.search + '%', req.body.search, req.body.search + '%', req.body.search + '%'], (err, data)=>{
         if(err) return res.status(400).json({"error": err})
         if(data.length === 0) return res.status(200).json({"respond": "Такого ученика нету. Убедитесь в правильности поиского запроса"})
         return res.status(200).json(data)
     })
 })
 
-app.get("/rili_api/search_for_admins/:parent/:id", token_verifyer, async(req, res)=>{//-------------------------vot tut realnaya dich------------------------------------------------------
+app.get("/rili_api/search_for_parent/:parent/:id", token_verifyer, async(req, res)=>{//-------------------------vot tut realnaya dich------------------------------------------------------
     if(req.params.parent==="mother"){
         db.query(
             "select*from parent_student left join parents on parent_student.parent_id = parents.id where studentx_id = ?",
@@ -122,6 +122,7 @@ app.get("/rili_api/search_for_admins/:parent/:id", token_verifyer, async(req, re
             (err, data)=>{
                 if(err){
                     console.log(err)
+                    return res.status(401).json({err})
                 }
                 console.log(data)
                 return res.status(200).json({"data": JSON.stringify(data)})

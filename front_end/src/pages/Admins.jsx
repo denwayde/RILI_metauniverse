@@ -9,7 +9,6 @@ import {Info, Book, Mail, User, PenTool} from 'react-feather';
 const Admins = () => {
   let [isValid, setIsValid] = useState(false)
   const navigateTo = useNavigate()
-  let [searchElement, setSearchElement] = useState('')
   let [respondForSearch, setRespondForSearch] = useState([])
   let [messageIfErr, setMessageIfErr] = useState('')
   let [isModal, setIsModal] = useState(false)
@@ -41,14 +40,13 @@ const Admins = () => {
 
    async function findStudents(e){
        e.preventDefault()
-       setSearchElement(e.target.value)
        let bodyForm = {
-           search: searchElement
+           search: e.target.value
        }
        if(e.target.value.length >= 2){
            await axiosInterceptors.post("/search_for_admins", bodyForm)
                .then(data =>{
-                   console.log(data.data)//------------------------------eto otobrajaet poiskovii zapros
+                   console.log(data.data)
                    if(data.data){
                        setRespondForSearch(data.data)
                    }
@@ -62,6 +60,7 @@ const Admins = () => {
  
 
    let showInfo =  (e)=>{
+    setUserInfoPanel(true)
     setIsModal(true)
     setPersonInModal(respondForSearch.filter(el=>el.id_student===parseInt(e.currentTarget.id))[0])
     
@@ -75,10 +74,11 @@ const Admins = () => {
     
 
     async function getUserInfo(e){
-        let req = "/search_for_admins/"+e.currentTarget.id.split('_')[0]+"/"+e.currentTarget.id.split('_')[1]
-        console.log(req)
+        
+        let req = "/search_for_parent/"+e.currentTarget.id.split('_')[0]+"/"+e.currentTarget.id.split('_')[1]
+        //console.log(req)
         let respond = await axiosInterceptors.get(req)
-        //console.log(respond.data.data)//----------eto normalno pokazivaet data
+        console.log(JSON.parse(respond.data.data))//----------eto normalno pokazivaet data
         setUserInfoPanel(false)
         setUserData(JSON.parse(respond.data.data))
         
@@ -92,13 +92,13 @@ const Admins = () => {
         <div className="row">
           <div className="input-group mb-3">
             <input type="text" className="form-control" placeholder="Введите класс или ФИО" onInput={findStudents}/>
-            <button className="btn btn-outline-primary" type="button" id="button-addon2">ПОИСК</button>
+            <button className="btn btn-outline-primary" type="button" id="button-addon2" onClick={findStudents}>ПОИСК</button>
           </div>
         </div>
 
 {/* Modalnoe okno */}
     { isModal ?
-        <div className="modal fade show" id="staticBackdropLive" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLiveLabel" style={{display: "block"}} aria-modal="true" role="dialog">
+        <div className="modal fade show" id="staticBackdropLive" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLiveLabel" style={{display: "block", backgroundColor: "rgba(0,0,0,0.7)"}} aria-modal="true" role="dialog">
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
@@ -180,7 +180,7 @@ const Admins = () => {
                                 <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
                         
                                 <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Name:</p>
-                                {/* <h6>{userData[0].name}</h6>------------------------------------------------------нихрена себе работает!!!! */}
+                                <h6>{userData[0].parent_name}</h6>
                                 </div>
                             </div>
                         }
