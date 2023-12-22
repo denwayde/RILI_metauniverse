@@ -48,7 +48,9 @@ const Admins = () => {
                .then(data =>{
                    console.log(data.data)
                    if(data.data){
-                       setRespondForSearch(data.data)
+                    
+                    //--------------------------------------тут надо изменить массив объектов !!!!!!!!!!!!!
+                      //setRespondForSearch(result)
                    }
                    else{
                        setMessageIfErr(data.response.data)
@@ -73,7 +75,7 @@ const Admins = () => {
 
     
 
-    async function getUserInfo(e){
+    async function getUserInfo(e){//-------------------tut nujno menyat zapros. mojet daje udalyat
         
         let req = "/search_for_parent/"+e.currentTarget.id.split('_')[0]+"/"+e.currentTarget.id.split('_')[1]
         //console.log(req)
@@ -178,9 +180,8 @@ const Admins = () => {
                             </div> : 
                             <div className="row">
                                 <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
-                        
-                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Name:</p>
-                                <h6>{userData[0].parent_name}</h6>
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Name:</p>
+                                    <h6>{userData[0].parent_name}</h6>
                                 </div>
                             </div>
                         }
