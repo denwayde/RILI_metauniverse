@@ -46,11 +46,57 @@ const Admins = () => {
        if(e.target.value.length >= 2){
            await axiosInterceptors.post("/search_for_admins", bodyForm)
                .then(data =>{
-                   console.log(data.data)
+                   //console.log(data.data)
                    if(data.data){
-                    
-                    //--------------------------------------тут надо изменить массив объектов !!!!!!!!!!!!!
-                      //setRespondForSearch(result)
+                    const arr = []
+                    for (let z of data.data){
+                        let newObj = {}
+                        let existingObj = arr.find((person)=> person.snils === z['snils'])
+                        //console.log(existingObj)
+                        if(existingObj!==undefined){
+                          existingObj.famyly.push(
+                            {
+                              parent_id: z['parent_id'],
+                              parent_name: z['parent_name'],
+                              parent_role: z['parent_role'],
+                              job: z['job'],
+                              job_place: z['job_place'],
+                              parent_phone: z['parent_phone'],
+                              parent_email: z['parent_email']
+                            }
+                          )
+                        } else {
+                          newObj.id_student =  z['id_student']
+                          newObj.name = z['name']
+                          newObj.surname = z['surname']
+                          newObj.patronymic = z['patronymic']
+                          newObj.graduation = z['graduation']
+                          newObj.email = z['email']
+                          newObj.phone = z['phone']
+                          newObj.checkpoints = z['checkpoints']
+                          newObj.snils = z['snils']
+                          newObj.birth_day = z['birth_day']
+                          newObj.gender = z['gender']
+                          newObj.adress = z['adress']
+                          newObj.room =z['room']
+                          newObj.violations = z['violations']
+                          newObj.date_of_enroll = z['date_of_enroll']
+                          newObj.enroll_order_num = z['enroll_order_num']
+                          newObj.family_length = z['family_length']
+                          newObj.famyly = [{
+                            parent_id: z['parent_id'],
+                            parent_name: z['parent_name'],
+                            parent_role: z['parent_role'],
+                            job: z['job'],
+                            job_place: z['job_place'],
+                            parent_phone: z['parent_phone'],
+                            parent_email: z['parent_email']
+                          }]
+                          arr.push(newObj)
+                        }
+                      }
+                      console.log(arr)
+                    setRespondForSearch(arr)
                    }
                    else{
                        setMessageIfErr(data.response.data)
