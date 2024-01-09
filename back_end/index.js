@@ -108,30 +108,42 @@ app.post("/rili_api/search_for_checkpoints", token_verifyer, async(req,res)=>{
 
 app.post("/rili_api/search_for_admins", token_verifyer, async(req, res)=>{
     db.query(
-        "SELECT * FROM parent_student RIGHT JOIN students ON parent_student.studentx_id = students.id_student RIGHT JOIN parents ON parents.id = parent_student.parent_id WHERE students.name LIKE ? OR students.surname LIKE ? OR students.patronymic LIKE ? OR students.graduation = ? OR students.email LIKE ? OR students.phone LIKE ?", [req.body.search + '%', req.body.search + '%', req.body.search + '%', req.body.search, req.body.search + '%', req.body.search + '%'], (err, data)=>{
-        if(err) return res.status(400).json({"error": err})
-        if(data.length === 0) return res.status(200).json({"respond": "Такого ученика нету. Убедитесь в правильности поиского запроса"})
-        return res.status(200).json(data)
+        "SELECT * FROM parent_student RIGHT JOIN students ON parent_student.studentx_id = students.id_student RIGHT JOIN parents ON parents.id = parent_student.parent_id WHERE students.name LIKE ? OR students.surname LIKE ? OR students.patronymic LIKE ? OR students.graduation = ? OR students.email LIKE ? OR students.phone LIKE ?", [req.body.search + '%', req.body.search + '%', req.body.search + '%', req.body.search, req.body.search + '%', req.body.search + '%'],
+        (err, data) => {
+            if(err){
+                return res.status(400).json({"error": err})
+            } 
+            else if(data.length === 0){
+                db.query(
+                    "select*from students WHERE name LIKE ? OR surname LIKE ? OR patronymic LIKE ? OR graduation = ? OR email LIKE ? OR phone LIKE ?",
+                    [req.body.search + '%', req.body.search + '%', req.body.search + '%', req.body.search, req.body.search + '%', req.body.search + '%'],
+                    (err, data)=>{
+                        if(err) {
+                            console.log("Error na 120")
+                            return res.status(400).json({"where": "sql to students", "err": err})
+                        }
+                        else if(data.length === 0){
+                            console.log("Error na 124")
+                            return res.status(200).json({"respond": "Такого ученика нету. Убедитесь в правильности поиского запроса"})
+                        }
+                        else{
+                            console.log("Mi na 127") 
+                            return res.status(200).json(data)
+                        }
+                        
+                    } 
+                )
+            } 
+            else {
+                // console.log("Error na 125")
+                // return res.status(200).json({"respond": "Ничего не нашлось. Убедитесь в правильности поиского запроса"})
+                console.log("Error na 127") 
+                return res.status(200).json(data)
+            }
+            
     })
 })
 
-app.get("/rili_api/search_for_parent/:parent/:id", token_verifyer, async(req, res)=>{//-------------------------vot tut realnaya dich------------------------------------------------------
-    if(req.params.parent==="mother"){
-        db.query(
-            "select*from parent_student left join parents on parent_student.parent_id = parents.id where studentx_id = ?",
-            [parseInt(req.params.id)],
-            (err, data)=>{
-                if(err){
-                    console.log(err)
-                    return res.status(401).json({err})
-                }
-                console.log(data)
-                return res.status(200).json({"data": JSON.stringify(data)})
-            }
-            )
-    }
-    
-})
 
 app.get("/rili_api/change_checkpoints/:id/:chekpoints", token_verifyer, async(req, res)=>{
     db.query("UPDATE students SET checkpoints=? WHERE id_student=?", [req.params.chekpoints, req.params.id], (err, data)=>{
@@ -139,6 +151,49 @@ app.get("/rili_api/change_checkpoints/:id/:chekpoints", token_verifyer, async(re
         return res.status(200).json({response: req.params.id+" обновлен"})
     })
 })
+
+app.get("/rili_api/show_vospit_info/:student_id",
+    token_verifyer,
+    (req, res)=>{
+        db.query(
+            "SELECT*FROM vospit_student RIGHT JOIN vospits ON vospit_student.vospit_id = vospits.vospit_id WHERE vospit_student.student_id = ?",
+            [req.params.student_id],
+            (err, data)=>{
+                if(err){
+                    return res.status(200).json({"respond": err})
+                }
+                else if(data.length === 0){
+                    return res.status(200).json({"respond": "Ничего не найдено. Проверьте правильность ввода"})
+                }
+                else{
+                    return res.status(200).json(data)
+                }
+            }
+        )
+    }
+    )
+
+    app.get("/rili_api/show_classruk_info/:student_id",
+    token_verifyer,
+    (req, res)=>{
+        db.query(
+            "SELECT*FROM klruk_student RIGHT JOIN klruk ON klruk_student.klruk_id = klruk.klruk_id WHERE klruk_student.student_id = ?",
+            [req.params.student_id],
+            (err, data)=>{
+                if(err){
+                    return res.status(200).json({"respond": err})
+                }
+                else if(data.length === 0){
+                    return res.status(200).json({"respond": "Ничего не найдено. Проверьте правильность ввода"})
+                }
+                else{
+                    return res.status(200).json(data)
+                }
+            }
+        )
+    }
+    )
+
 
 app.listen(process.env.PORT, ()=>{
     console.log(`Server runs on port ${process.env.PORT}`)

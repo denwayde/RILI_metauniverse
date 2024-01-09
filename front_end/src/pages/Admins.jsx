@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import HeaderNav from './components/Header'
 import useInterceptors from "../hooks/UseInterceptor";
 import { useNavigate } from 'react-router-dom';
-import {Info, Book, Mail, User, PenTool} from 'react-feather';
+import {Info, Book, Mail, User, PenTool, ArrowLeft} from 'react-feather';
 
 
 
@@ -47,7 +47,7 @@ const Admins = () => {
            await axiosInterceptors.post("/search_for_admins", bodyForm)
                .then(data =>{
                    //console.log(data.data)
-                   if(data.data){
+                   if(typeof data.data !== 'undefined' && typeof data.data[Symbol.iterator] === 'function'){
                     const arr = []
                     for (let z of data.data){
                         let newObj = {}
@@ -99,7 +99,8 @@ const Admins = () => {
                     setRespondForSearch(arr)
                    }
                    else{
-                       setMessageIfErr(data.response.data)
+                    console.log(data.data.respond)//-------------------tut nado budet vivodit oshibki
+                       //setMessageIfErr(data.response.data)
                    }
 
                })
@@ -118,22 +119,49 @@ const Admins = () => {
    let closeModal = ()=>{
     setIsModal(false)
    }
+    
+   let[parentInfo, setParentInfo] = useState()
+    function showParentInfo(e){
+        let parentId = parseInt(e.currentTarget.id)
+        setUserData(undefined)
+        setKlassRukData(undefined)
+        setUserInfoPanel(false)
+        setParentInfo(
+            personInModal.famyly.filter(
+                el=>el.parent_id===parentId
+            )[0]
+        )
+    }
+async function showVospit(e){
+    await axiosInterceptors.get("/show_vospit_info/"+e.currentTarget.id).then(
+        data=>{
+            console.log(data.data)
+            if(data){
+                setKlassRukData(undefined)
+                setUserData(data.data[0])
+                setUserInfoPanel(false)
+            }
+        }
+    )
+    
+}
 
+let [klassrukData, setKlassRukData] = useState()
+async function showKlassRuk(e){
+    await axiosInterceptors.get("/show_classruk_info/"+e.currentTarget.id).then(
+        data=>{
+            console.log(data.data)
+            if(data){
+                setUserData(undefined)
+                setKlassRukData(data.data[0])
+                setUserInfoPanel(false)
+            }
+        }
+    )
+}
     
 
-    async function getUserInfo(e){//-------------------tut nujno menyat zapros. mojet daje udalyat
-        
-        let req = "/search_for_parent/"+e.currentTarget.id.split('_')[0]+"/"+e.currentTarget.id.split('_')[1]
-        //console.log(req)
-        let respond = await axiosInterceptors.get(req)
-        console.log(JSON.parse(respond.data.data))//----------eto normalno pokazivaet data
-        setUserInfoPanel(false)
-        setUserData(JSON.parse(respond.data.data))
-        
-        
-    }
-
-  return isValid ? (
+return isValid ? (
     <>
       <HeaderNav/>
       <div className="container">
@@ -204,7 +232,7 @@ const Admins = () => {
                             {
                                 (()=>{
                                     let yearNow = new Date().getFullYear()
-                                    let birthYear = parseInt(personInModal.birth_day.split('.')[2])
+                                    let birthYear = parseInt(personInModal.birth_day.split('-')[0])
                                     return yearNow - birthYear
                                 })()
                             }
@@ -216,18 +244,97 @@ const Admins = () => {
                         {userInfoPanel ?
                             <div className="row">
                                 <div className="col">
-                                    <h6><button className="btn btn-light" id={"mother_"+personInModal.id_student} onClick={getUserInfo}><span style={{color: '#d63384'}}><User/></span> Мать</button></h6>
-                                    <h6><button className="btn btn-light" id={"father_"+personInModal.id_student} ><span style={{color: '#0d6efd'}}><User/></span> Отец</button></h6>
+                                    {
+                                        (()=>{
+                                            let family_arr = []
+                                            if(personInModal.famyly[0].parent_id !== undefined){
+                                                for(let x of personInModal.famyly){
+                                                    family_arr.push(
+                                                            <h6 key={x.parent_id}>
+                                                                <button className="btn btn-light" id={x.parent_id} onClick={showParentInfo}>
+                                                                    <span style={{color: '#0d6efd'}}><User/> </span>
+                                                                    {x.parent_role}
+                                                                </button>
+                                                            </h6>
+                                                    )
+                                                }
+                                                return family_arr
+                                            }
+                                            else {
+                                                return <h6>Информации о родителях не заполнена</h6>
+                                            }
+                                        })()
+                                    }
+                                    
                                 </div>
                                 <div className="col">
-                                    <h6><button className="btn btn-light" id={"teacher_"+personInModal.id_student} ><span style={{color: '#198754'}}><PenTool/></span> Классрук</button></h6>
-                                    <h6><button className="btn btn-light" id={"vospit_"+personInModal.id_student} ><span style={{color: '#198754'}}><PenTool/></span> Воспитатель</button></h6>
+                                    <h6>
+                                        <button className="btn btn-light" id={personInModal.id_student} onClick={showKlassRuk}>
+                                            <span style={{color: '#198754'}}><PenTool/></span> Классрук
+                                        </button>
+                                    </h6>
+                                    <h6>
+                                        <button className="btn btn-light" id={personInModal.id_student} onClick={showVospit}><span style={{color: '#198754'}}><PenTool/></span> Воспитатель</button>
+                                    </h6>
                                 </div>
-                            </div> : 
+                            </div>
+                            : 
+                            (userInfoPanel === false && userData !== undefined)?
                             <div className="row">
-                                <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
-                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Name:</p>
-                                    <h6>{userData[0].parent_name}</h6>
+                                <div className="col-10">
+
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Имя:</p>
+                                    <h6>{userData.vospit_name}</h6>
+
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}> Телефон:</p>
+                                    <h6>{userData.vospit_phone}</h6>
+
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}> Email:</p>
+                                    <h6>{userData.vospit_email}</h6>
+
+                                </div>
+                                <div className="col-2 d-flex justify-content-end">
+                                    <button className='btn-back btn btn-light' onClick={(e)=>setUserInfoPanel(true)}><ArrowLeft/></button>
+                                </div>
+                            </div>
+                            :
+                            (userInfoPanel === false && klassrukData !== undefined)?
+                            <div className="row">
+                                <div className="col-10">
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Имя:</p>
+                                    <h6>{klassrukData.klruk_name}</h6>
+
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}> Телефон:</p>
+                                    <h6>{klassrukData.klruk_phone}</h6>
+
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}> Email:</p>
+                                    <h6>{klassrukData.klruk_email}</h6>
+                                </div>
+                                <div className="col-2 d-flex justify-content-end">
+                                    <button className='btn-back btn btn-light' onClick={(e)=>setUserInfoPanel(true)}><ArrowLeft/></button>
+                                </div>
+                            </div>
+                            :
+                            <div className="row parent">
+                                <div className="col-10">
+        
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Имя:</p>
+                                    <h6>{parentInfo.parent_name}</h6>
+
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}> Телефон:</p>
+                                    <h6>{parentInfo.parent_phone}</h6>
+
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}> Email:</p>
+                                    <h6>{parentInfo.parent_email}</h6>
+
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}> Место работы:</p>
+                                    <h6>{parentInfo.job_place}</h6>
+
+                                    <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}> Должность:</p>
+                                    <h6>{parentInfo.job}</h6>
+                                </div>
+                                <div className="col-2 d-flex justify-content-end">
+                                    <button className='btn-back btn btn-light' onClick={(e)=>setUserInfoPanel(true)}><ArrowLeft/></button>
                                 </div>
                             </div>
                         }
