@@ -110,10 +110,12 @@ app.post("/rili_api/search_for_admins", token_verifyer, async(req, res)=>{
     db.query(
         "SELECT * FROM parent_student RIGHT JOIN students ON parent_student.studentx_id = students.id_student RIGHT JOIN parents ON parents.id = parent_student.parent_id WHERE students.name LIKE ? OR students.surname LIKE ? OR students.patronymic LIKE ? OR students.graduation = ? OR students.email LIKE ? OR students.phone LIKE ?", [req.body.search + '%', req.body.search + '%', req.body.search + '%', req.body.search, req.body.search + '%', req.body.search + '%'],
         (err, data) => {
+            console.log(data)
+            console.log(err)
             if(err){
                 return res.status(400).json({"error": err})
             } 
-            else if(data.length === 0){
+            else if(data.length === 0 || data == undefined){
                 db.query(
                     "select*from students WHERE name LIKE ? OR surname LIKE ? OR patronymic LIKE ? OR graduation = ? OR email LIKE ? OR phone LIKE ?",
                     [req.body.search + '%', req.body.search + '%', req.body.search + '%', req.body.search, req.body.search + '%', req.body.search + '%'],

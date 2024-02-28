@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import {Info, Book, Mail, User, PenTool, ArrowLeft} from 'react-feather';
 
 
+import Edit_input from './admins_components/Edit';
+
 
 const Admins = () => {
   let [isValid, setIsValid] = useState(false)
@@ -82,6 +84,8 @@ const Admins = () => {
                           newObj.violations = z['violations']
                           newObj.date_of_enroll = z['date_of_enroll']
                           newObj.enroll_order_num = z['enroll_order_num']
+                          newObj.nationality = z['nationality']
+                          newObj.subsid = z['subsid']
                           newObj.family_length = z['family_length']
                           newObj.famyly = [{
                             parent_id: z['parent_id'],
@@ -117,6 +121,7 @@ const Admins = () => {
 
    
    let closeModal = ()=>{
+    setIsEdit(true)
     setIsModal(false)
    }
     
@@ -159,18 +164,26 @@ async function showKlassRuk(e){
         }
     )
 }
-    
+
+let [isedit, setIsEdit] = useState(true)//редактирование ученика
+function editUserInfo(e){
+    setIsEdit(false)
+    //console.log(isedit)
+}
 
 return isValid ? (
     <>
       <HeaderNav/>
       <div className="container">
+
         <div className="row">
           <div className="input-group mb-3">
             <input type="text" className="form-control" placeholder="Введите класс или ФИО" onInput={findStudents}/>
             <button className="btn btn-outline-primary" type="button" id="button-addon2" onClick={findStudents}>ПОИСК</button>
           </div>
         </div>
+
+        
 
 {/* Modalnoe okno */}
     { isModal ?
@@ -182,14 +195,26 @@ return isValid ? (
                     </div>
                     <div className="modal-body">
                         <h3>
-                            {""+personInModal.surname+" "+personInModal.name + " " +personInModal.patronymic}
-                            <small style={{fontSize: '.6em'}}>
-                                {' ('+personInModal.gender +')' }
-                            </small>
+                            {isedit === true ? ""+personInModal.surname+" "+personInModal.name + " " +personInModal.patronymic : <Edit_input {...{name: ""+personInModal.surname+" "+personInModal.name + " " +personInModal.patronymic}} />}
+                            
                         </h3>
                     </div>
-
-                    <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
+                    
+                    <div className="modal-body" style={(()=>{
+                        let mystyle = {
+                            borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)',
+                            backgroundColor: '#FFF4F4',
+                            color: '#000'
+                        }
+                        if(personInModal.violations==2){
+                            mystyle.backgroundColor = '#FF9B50'
+                        }
+                        else if(personInModal.violations>2){
+                            mystyle.backgroundColor = '#E25E3E'
+                            mystyle.color = '#ffff'
+                        }
+                        return mystyle
+                    })()}>
                         <div className="row">
                             <div className="col">
                                 <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Класс:</p>
@@ -208,35 +233,53 @@ return isValid ? (
                     </div>
 
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
-                        
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Телефон:</p>
-                        <h6>{personInModal.phone}</h6>
+                        <div className="row">
+                            <div className="col">
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Адрес:</p>
+                                <h6 style={{fontSize: '0.9rem'}}>{personInModal.adress}</h6>
 
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Email:</p>
-                        <h6><a href={'mailto:'+personInModal.email} target='_blank' rel="noreferrer" className="btn btn-light"><span style={{color: '#0d6efd'}}><Mail /></span> {personInModal.email}</a></h6>
-                        
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Адрес:</p>
-                        <h6>{personInModal.adress}</h6>
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>СНИЛС:</p>
+                                <h6>{personInModal.snils}</h6>
 
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>СНИЛС:</p>
-                        <h6>{personInModal.snils}</h6>
-                
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Субсидии:</p>
+                                <h6>{personInModal.subsid}</h6>
+                            </div>
+                            <div className="col">
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Телефон:</p>
+                                <h6>{personInModal.phone}</h6>
+
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Email:</p>
+                                <h6><a href={'mailto:'+personInModal.email} target='_blank' rel="noreferrer" className="btn btn-light"><span style={{color: '#0d6efd'}}><Mail /></span> {personInModal.email}</a></h6>
+                            </div>
+                        
+                        </div>
                     </div>
 
                     <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Год рождения:</p>
-                        <h6>{personInModal.birth_day}</h6>
-                        
-                        <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Полных лет:</p>
-                        <h6>
-                            {
-                                (()=>{
-                                    let yearNow = new Date().getFullYear()
-                                    let birthYear = parseInt(personInModal.birth_day.split('-')[0])
-                                    return yearNow - birthYear
-                                })()
-                            }
-                        </h6>
+                        <div className="row">
+                            <div className="col">
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Пол:</p>
+                                <h6>{personInModal.gender.charAt(0).toUpperCase() + personInModal.gender.slice(1)}</h6>
+
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Национальность:</p>
+                                <h6>{personInModal.nationality}</h6>
+                            </div>
+                            <div className="col">
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Год рождения:</p>
+                                <h6>{personInModal.birth_day}</h6>
+                                
+                                <p style={{marginBottom: '0.1rem', fontSize: '0.7rem'}}>Полных лет:</p>
+                                <h6>
+                                    {
+                                        (()=>{
+                                            let yearNow = new Date().getFullYear()
+                                            let birthYear = parseInt(personInModal.birth_day.split('-')[0])
+                                            return yearNow - birthYear
+                                        })()
+                                    }
+                                </h6>
+                            </div>
+                        </div>
                     </div>
 
                     
@@ -253,7 +296,7 @@ return isValid ? (
                                                             <h6 key={x.parent_id}>
                                                                 <button className="btn btn-light" id={x.parent_id} onClick={showParentInfo}>
                                                                     <span style={{color: '#0d6efd'}}><User/> </span>
-                                                                    {x.parent_role}
+                                                                    {x.parent_role.charAt(0).toUpperCase() + x.parent_role.slice(1)}
                                                                 </button>
                                                             </h6>
                                                     )
@@ -340,7 +383,7 @@ return isValid ? (
                         }
                     </div>
 
-                    <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
+                    {/* <div className="modal-body" style={{borderTop: 'var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color)'}}>
                         <div className="row">
                             <div className="col">
                                 <h6><button className="btn btn-light" ><span style={{color: '#198754'}}><Book/></span> Башкирский</button></h6>
@@ -349,9 +392,10 @@ return isValid ? (
                                 <h6><button className="btn btn-light" ><span style={{color: '#198754'}}><Book/></span> Английский</button></h6>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" onClick={editUserInfo}>Редактировать</button>
                         <button type="button" className="btn btn-primary">Выбрать</button>
                     </div>
                 </div>
@@ -361,32 +405,41 @@ return isValid ? (
 {/* Modalnoe okno */}
 
         { respondForSearch.length !== 0 &&
-            (<ul className="list-group">
-              {(()=>{
-                const listItems = []
-                for(let i = 0; i<respondForSearch.length; i++){
-                    let student = respondForSearch[i]
-                    listItems.push(
-                        <li key={i} className="list-group-item d-flex justify-content-between align-items-center">
-                            <span className="studentName" style={{width: "30%"}}>{student.name} {student.surname} {student.patronymic}</span>
-                            
-                                <span className="studentEmail" style={{color: '#6c757d' }}>{student.graduation}</span>
-                                <span className="studentEmail" style={{color: '#6c757d' }}>{student.email}</span>
-                                <span className="studentPhone" style={{color: '#6c757d' }}>{student.phone}</span>
-                            
-                            <span style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-
-                                <span className="btn btn-outline-primary m-1" id={student.id_student} onClick={showInfo}>
-                                    <span className="textInBtn">Инфо</span> <Info/>
-                                </span>
+            (
+                <>
+                <div className='row'>
+                    <div className="col">
+                        <h6>Найдено {respondForSearch.length}</h6>
+                    </div>
+                </div>
+                <ul className="list-group">
+                {(()=>{
+                    const listItems = []
+                    for(let i = 0; i<respondForSearch.length; i++){
+                        let student = respondForSearch[i]
+                        listItems.push(
+                            <li key={i} className="list-group-item d-flex justify-content-between align-items-center">
+                                <span className="studentName" style={{width: "30%"}}>{student.name} {student.surname} {student.patronymic}</span>
                                 
-                            </span>
-                        </li>
-                    )
-                }
-                return listItems
-              })()}
-            </ul>)
+                                    <span className="studentEmail" style={{color: '#6c757d' }}>{student.graduation}</span>
+                                    <span className="studentEmail" style={{color: '#6c757d' }}>{student.email}</span>
+                                    <span className="studentPhone" style={{color: '#6c757d' }}>{student.phone}</span>
+                                
+                                <span style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+
+                                    <span className="btn btn-outline-primary m-1" id={student.id_student} onClick={showInfo}>
+                                        <span className="textInBtn">Инфо</span> <Info/>
+                                    </span>
+                                    
+                                </span>
+                            </li>
+                        )
+                    }
+                    return listItems
+                })()}
+                </ul>
+            </>
+            )
                 }
                 {messageIfErr && <div class="alert alert-danger" role="alert"> {messageIfErr} </div>}
       </div>
